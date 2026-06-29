@@ -2,739 +2,1122 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Storecraft — Build Your Store</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config={theme:{extend:{colors:{cream:'#FAF7F2',bark:'#2C1810',muted:'#8B7355',terra:'#C4653A','terra-light':'#E8956E',sage:'#7D8C6E',sand:'#E8DFD4','sand-light':'#F3EDE4'},fontFamily:{display:['Playfair Display','serif'],body:['DM Sans','sans-serif']}}}}
-</script>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>5 & 2 Kitchen</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <style>
-*{scrollbar-width:thin;scrollbar-color:#E8DFD4 transparent}
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#E8DFD4;border-radius:3px}
-body{font-family:'DM Sans',sans-serif}
-.page-enter{animation:fadeUp .35s ease both}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@keyframes slideRight{from{transform:translateX(100%)}to{transform:translateX(0)}}
-@keyframes slideLeft{from{transform:translateX(0)}to{transform:translateX(100%)}}
-.cart-open{animation:slideRight .3s ease both}
-.cart-close{animation:slideLeft .3s ease both}
-.sidebar-overlay{transition:opacity .2s}
-.img-hover{overflow:hidden}.img-hover img{transition:transform .5s ease}.img-hover:hover img{transform:scale(1.06)}
-input[type="color"]{-webkit-appearance:none;border:none;width:48px;height:48px;cursor:pointer;border-radius:8px;padding:2px}
-input[type="color"]::-webkit-color-swatch-wrapper{padding:0}
-input[type="color"]::-webkit-color-swatch{border:2px solid #E8DFD4;border-radius:6px}
-.stat-card{transition:transform .2s,box-shadow .2s}.stat-card:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(44,24,16,.08)}
-.product-admin-card{transition:all .2s}.product-admin-card:hover{box-shadow:0 4px 15px rgba(44,24,16,.08)}
-.drop-zone{border:2px dashed #E8DFD4;transition:all .2s}.drop-zone.dragover{border-color:#C4653A;background:rgba(196,101,58,.04)}
-.toast-enter{animation:toastIn .35s ease both}
-@keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
-.hero-pattern{background-image:radial-gradient(circle at 20% 50%,rgba(196,101,58,.06) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(125,140,110,.06) 0%,transparent 50%),radial-gradient(circle at 60% 80%,rgba(196,101,58,.04) 0%,transparent 50%)}
+:root{
+  --bg:#FAF7F2;--bg-deep:#F0EBE3;--fg:#2C1810;--fg-light:#5C4A3E;--muted:#9C8E82;
+  --accent:#C4704B;--accent-hover:#A85A38;--accent-light:rgba(196,112,75,.08);
+  --sage:#7A8E6E;--sage-light:rgba(122,142,110,.12);
+  --card:#fff;--border:#E8E0D6;--danger:#C44B4B;--danger-light:rgba(196,75,75,.08);
+  --shadow:0 2px 12px rgba(44,24,16,.05);--shadow-md:0 4px 20px rgba(44,24,16,.08);
+  --shadow-lg:0 8px 40px rgba(44,24,16,.12);
+  --radius:16px;--radius-sm:10px;--radius-xs:6px;
+  --font-d:'Playfair Display',Georgia,serif;--font-b:'DM Sans',sans-serif;
+  --header-h:56px;--safe:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--font-b);background:var(--bg);color:var(--fg);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;min-height:100dvh}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 0%,rgba(196,112,75,.06) 0%,transparent 50%),radial-gradient(ellipse at 80% 100%,rgba(122,142,110,.05) 0%,transparent 50%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+h1,h2,h3{font-family:var(--font-d);font-weight:600;line-height:1.2}
+button{font-family:var(--font-b)}
+
+/* Header */
+.store-header{position:sticky;top:0;z-index:100;background:rgba(250,247,242,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:var(--header-h);display:flex;align-items:center;justify-content:space-between;padding:0 20px}
+.store-logo{font-family:var(--font-d);font-size:1.2rem;font-weight:700;color:var(--fg);text-decoration:none}.store-logo span{color:var(--accent)}
+.icon-btn{width:38px;height:38px;border-radius:50%;border:none;background:var(--card);color:var(--fg-light);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:.95rem;box-shadow:var(--shadow)}.icon-btn:active{transform:scale(.92)}
+
+/* Hero */
+.hero{position:relative;padding:44px 24px 36px;text-align:center;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-40%;left:-20%;width:140%;height:100%;background:radial-gradient(ellipse,var(--accent-light) 0%,transparent 70%);pointer-events:none}
+.hero-tag{display:inline-block;font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--accent);background:var(--accent-light);padding:6px 16px;border-radius:100px;margin-bottom:14px}
+.hero h1{font-size:2.1rem;margin-bottom:10px;position:relative}
+.hero p{color:var(--fg-light);font-size:.92rem;max-width:320px;margin:0 auto;position:relative}
+
+/* Categories */
+.categories{padding:0 20px 8px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.categories::-webkit-scrollbar{display:none}
+.cat-pill{flex-shrink:0;padding:8px 18px;border-radius:100px;border:1.5px solid var(--border);background:var(--card);font-size:.8rem;font-weight:500;color:var(--fg-light);cursor:pointer;transition:all .25s;white-space:nowrap}.cat-pill.active{background:var(--fg);color:var(--bg);border-color:var(--fg)}.cat-pill:active{transform:scale(.95)}
+
+/* Product Grid */
+.products-section{padding:16px 20px 120px;position:relative;z-index:1}
+.products-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(min-width:640px){.products-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:960px){.products-grid{grid-template-columns:repeat(4,1fr)}}
+.product-card{background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:transform .25s;opacity:0;transform:translateY(20px);animation:cardIn .5s forwards;position:relative}
+.product-card:active{transform:scale(.97)!important}
+@keyframes cardIn{to{opacity:1;transform:translateY(0)}}
+.product-card img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.product-card-body{padding:11px 12px}
+.product-card-name{font-weight:600;font-size:.85rem;margin-bottom:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.product-card-price{color:var(--accent);font-weight:700;font-size:.92rem}
+.product-card.unavailable{opacity:.45;pointer-events:none}
+.sold-out-badge{position:absolute;top:10px;right:10px;background:var(--fg);color:var(--bg);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:4px 10px;border-radius:100px}
+
+/* Cart FAB */
+.cart-fab{position:fixed;bottom:24px;right:20px;width:56px;height:56px;border-radius:50%;background:var(--fg);color:var(--bg);border:none;font-size:1.15rem;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow-lg);z-index:90;transition:transform .3s,bottom .3s}
+.cart-fab:active{transform:scale(.9)}
+.cart-fab.hidden{transform:scale(0);bottom:-20px;pointer-events:none}
+.cart-badge{position:absolute;top:-3px;right:-3px;background:var(--accent);color:#fff;font-size:.62rem;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)}
+.cart-badge.bounce{animation:bbounce .4s}
+@keyframes bbounce{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+
+/* Sheet */
+.sheet-overlay{position:fixed;inset:0;background:rgba(44,24,16,.4);z-index:200;opacity:0;pointer-events:none;transition:opacity .3s}
+.sheet-overlay.active{opacity:1;pointer-events:auto}
+.sheet{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-radius:24px 24px 0 0;z-index:201;transform:translateY(100%);transition:transform .35s cubic-bezier(.32,.72,0,1);max-height:90dvh;display:flex;flex-direction:column}
+.sheet.active{transform:translateY(0)}
+@media(min-width:768px){.sheet{max-width:460px;left:auto;right:0;border-radius:24px 0 0 0}}
+.sheet-handle{width:36px;height:4px;background:var(--border);border-radius:4px;margin:12px auto 0;flex-shrink:0}
+.sheet-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.sheet-header h2{font-size:1.15rem}
+.sheet-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--bg);color:var(--fg-light);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.sheet-body{padding:16px 20px;overflow-y:auto;flex:1;padding-bottom:calc(20px + var(--safe))}
+
+/* Cart Items */
+.cart-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:center}
+.cart-item img{width:60px;height:60px;border-radius:var(--radius-xs);object-fit:cover;flex-shrink:0}
+.cart-item-info{flex:1;min-width:0}.cart-item-name{font-weight:600;font-size:.84rem}.cart-item-price{color:var(--accent);font-weight:600;font-size:.8rem}
+.qty-ctrl{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:var(--radius-xs);overflow:hidden;flex-shrink:0}
+.qty-btn{width:30px;height:30px;border:none;background:none;color:var(--fg);font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center}.qty-btn:active{background:var(--bg)}
+.qty-val{width:30px;text-align:center;font-weight:600;font-size:.82rem;border-left:1px solid var(--border);border-right:1px solid var(--border);line-height:30px}
+.cart-footer{padding:16px 20px;border-top:1px solid var(--border);flex-shrink:0;padding-bottom:calc(16px + var(--safe))}
+.cart-total{display:flex;justify-content:space-between;font-size:1.05rem;font-weight:700;margin-bottom:12px}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:var(--radius-sm);border:none;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;width:100%}.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--fg);color:var(--bg)}.btn-accent{background:var(--accent);color:#fff}.btn-accent:hover{background:var(--accent-hover)}
+.btn-outline{background:transparent;color:var(--fg);border:1.5px solid var(--border)}.btn-outline:hover{border-color:var(--fg)}
+.btn-danger{background:var(--danger-light);color:var(--danger)}.btn-sm{padding:10px 16px;font-size:.8rem}
+.btn-ghost{background:none;color:var(--muted);padding:8px}.btn-ghost:hover{color:var(--fg)}
+
+/* Product Detail */
+.detail-img{width:100%;aspect-ratio:1;object-fit:cover;max-height:320px}
+.detail-info{padding:20px}
+.detail-cat{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--sage);margin-bottom:6px}
+.detail-name{font-family:var(--font-d);font-size:1.4rem;font-weight:700;margin-bottom:4px}
+.detail-price{font-size:1.25rem;font-weight:700;color:var(--accent);margin-bottom:12px}
+.detail-desc{color:var(--fg-light);font-size:.88rem;line-height:1.7;margin-bottom:20px}
+.detail-add{display:flex;align-items:center;gap:12px}.detail-add .qty-ctrl{flex-shrink:0}.detail-add .btn{flex:1}
+
+/* Checkout */
+.checkout-overlay{position:fixed;inset:0;background:var(--bg);z-index:300;transform:translateX(100%);transition:transform .35s cubic-bezier(.32,.72,0,1);overflow-y:auto;-webkit-overflow-scrolling:touch}
+.checkout-overlay.active{transform:translateX(0)}
+.checkout-header{position:sticky;top:0;background:rgba(250,247,242,.9);backdrop-filter:blur(20px);padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);z-index:1}
+.checkout-back{width:36px;height:36px;border-radius:50%;border:none;background:var(--card);color:var(--fg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;box-shadow:var(--shadow)}
+.checkout-body{padding:20px;padding-bottom:calc(40px + var(--safe))}
+.checkout-section{margin-bottom:24px}
+.checkout-section>h3{font-family:var(--font-b);font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:12px}
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:6px}
+.form-input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius-xs);font-family:var(--font-b);font-size:.88rem;color:var(--fg);background:var(--card);transition:border-color .2s;outline:none}
+.form-input:focus{border-color:var(--accent)}.form-input::placeholder{color:var(--muted)}
+textarea.form-input{resize:vertical;min-height:76px}
+.summary-row{display:flex;justify-content:space-between;padding:7px 0;font-size:.86rem}
+.summary-row.total{border-top:2px solid var(--fg);padding-top:12px;margin-top:4px;font-weight:700;font-size:.98rem}
+
+/* PayNow */
+.paynow-section{text-align:center;padding:24px 0}
+.paynow-qr{display:inline-block;padding:16px;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow-md);margin-bottom:16px}
+.paynow-qr img{display:block;width:200px;height:200px;image-rendering:pixelated}
+.paynow-id{font-size:.84rem;color:var(--fg-light);margin-bottom:8px}.paynow-id strong{color:var(--fg)}
+.paynow-note{font-size:.76rem;color:var(--muted);max-width:280px;margin:0 auto}
+
+/* Confirmation */
+.confirmation{text-align:center;padding:40px 20px}
+.confirmation-icon{width:72px;height:72px;border-radius:50%;background:var(--sage-light);color:var(--sage);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 20px}
+.confirmation h2{margin-bottom:8px}.confirmation p{color:var(--fg-light);font-size:.88rem}
+.order-ref{display:inline-block;background:var(--bg);padding:8px 16px;border-radius:var(--radius-xs);font-family:monospace;font-size:.84rem;margin-top:12px;font-weight:600}
+
+/* About */
+.about-section{padding:40px 20px 80px;text-align:center;position:relative;z-index:1}
+.about-section h2{margin-bottom:12px}
+.about-section p{color:var(--fg-light);font-size:.88rem;max-width:400px;margin:0 auto;line-height:1.8}
+
+/* Footer */
+.store-footer{padding:20px;text-align:center;border-top:1px solid var(--border);position:relative;z-index:1}
+.store-footer p{font-size:.72rem;color:var(--muted)}
+.admin-link{display:inline-flex;align-items:center;gap:6px;font-size:.7rem;color:var(--muted);cursor:pointer;margin-top:8px;opacity:.5;transition:opacity .2s;background:none;border:none;font-family:var(--font-b)}.admin-link:hover{opacity:1}
+
+/* ===== ADMIN ===== */
+.admin-panel{position:fixed;inset:0;background:var(--bg);z-index:400;transform:translateX(100%);transition:transform .35s cubic-bezier(.32,.72,0,1);display:flex;flex-direction:column;overflow:hidden}
+.admin-panel.active{transform:translateX(0)}
+.admin-header{background:var(--fg);color:var(--bg);padding:0 20px;height:var(--header-h);display:flex;align-items:center;gap:12px;flex-shrink:0}
+.admin-header .icon-btn{background:rgba(255,255,255,.15);color:var(--bg);box-shadow:none}
+.admin-header h2{font-family:var(--font-b);font-size:1rem;font-weight:600}
+.admin-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--card);flex-shrink:0}
+.admin-tab{flex:1;padding:13px 8px;border:none;background:none;font-size:.78rem;font-weight:500;color:var(--muted);cursor:pointer;position:relative;transition:color .2s}.admin-tab.active{color:var(--fg);font-weight:600}
+.admin-tab.active::after{content:'';position:absolute;bottom:0;left:12px;right:12px;height:2.5px;background:var(--accent);border-radius:2px 2px 0 0}
+.admin-content{flex:1;overflow-y:auto;padding:20px;-webkit-overflow-scrolling:touch}
+@media(min-width:768px){.admin-content{max-width:700px;margin:0 auto;padding:24px}}
+.admin-tab-content{display:none}.admin-tab-content.active{display:block}
+
+.admin-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.stat-card{background:var(--card);padding:14px;border-radius:var(--radius-sm);text-align:center;box-shadow:var(--shadow)}
+.stat-value{font-size:1.4rem;font-weight:700;font-family:var(--font-d)}
+.stat-label{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+
+.search-bar{position:relative;margin-bottom:16px}
+.search-bar i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.82rem}
+.search-bar input{width:100%;padding:11px 14px 11px 38px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-b);font-size:.86rem;background:var(--card);color:var(--fg);outline:none}.search-bar input:focus{border-color:var(--accent)}
+
+.admin-product-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);align-items:center}
+.admin-product-item img{width:52px;height:52px;border-radius:var(--radius-xs);object-fit:cover;flex-shrink:0}
+.admin-product-info{flex:1;min-width:0}.admin-product-name{font-weight:600;font-size:.86rem}.admin-product-meta{font-size:.72rem;color:var(--muted)}
+.admin-product-actions{display:flex;gap:6px;flex-shrink:0}
+.admin-product-actions .icon-btn{width:32px;height:32px;font-size:.75rem}
+
+.toggle{position:relative;width:42px;height:24px;border-radius:12px;background:var(--border);cursor:pointer;transition:background .25s;border:none;flex-shrink:0}.toggle.on{background:var(--sage)}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .25s;box-shadow:0 1px 4px rgba(0,0,0,.15)}.toggle.on::after{transform:translateX(18px)}
+
+.admin-form h3{font-family:var(--font-b);font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:14px}
+.img-preview{width:100%;aspect-ratio:16/9;border-radius:var(--radius-sm);background:var(--bg-deep);display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:10px;border:2px dashed var(--border)}.img-preview img{width:100%;height:100%;object-fit:cover}
+.img-preview .ph{font-size:1.8rem;color:var(--muted);opacity:.4}
+
+.order-card{background:var(--card);border-radius:var(--radius-sm);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.order-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:6px}
+.order-ref-label{font-family:monospace;font-size:.75rem;font-weight:600;background:var(--bg);padding:3px 8px;border-radius:var(--radius-xs)}
+.order-status{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:4px 10px;border-radius:100px}
+.st-pending{background:#FFF3E0;color:#E65100}.st-paid{background:#E8F5E9;color:#2E7D32}.st-preparing{background:#E3F2FD;color:#1565C0}.st-ready{background:#F3E5F5;color:#7B1FA2}.st-collected{background:var(--bg);color:var(--muted)}
+.order-customer{font-size:.84rem;margin-bottom:3px}.order-customer span{color:var(--muted);font-size:.78rem}
+.order-items-list{font-size:.8rem;color:var(--fg-light);margin-bottom:6px}
+.order-total-val{font-weight:700;font-size:.88rem}
+.order-notes{font-size:.76rem;color:var(--muted);font-style:italic;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.order-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+
+.radio-group{display:flex;gap:8px}
+.radio-opt{flex:1;padding:10px;border:1.5px solid var(--border);border-radius:var(--radius-xs);text-align:center;font-size:.8rem;font-weight:500;cursor:pointer;transition:all .2s;background:var(--card)}.radio-opt.active{border-color:var(--fg);background:var(--fg);color:var(--bg)}
+
+.status-select{padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--radius-xs);font-family:var(--font-b);font-size:.78rem;background:var(--card);color:var(--fg);outline:none;cursor:pointer}
+
+.admin-add-btn{position:fixed;bottom:24px;right:20px;width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;border:none;font-size:1.3rem;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow-lg);z-index:10;transition:transform .25s}.admin-add-btn:active{transform:scale(.9)}
+
+/* PIN Modal */
+.pin-modal{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;background:rgba(44,24,16,.5);opacity:0;pointer-events:none;transition:opacity .25s}.pin-modal.active{opacity:1;pointer-events:auto}
+.pin-box{background:var(--card);border-radius:var(--radius);padding:32px;width:280px;text-align:center;box-shadow:var(--shadow-lg);transform:scale(.9);transition:transform .25s}.pin-modal.active .pin-box{transform:scale(1)}
+.pin-box h3{margin-bottom:4px}.pin-box>p{font-size:.8rem;color:var(--muted);margin-bottom:18px}
+.pin-input{width:100%;text-align:center;font-size:1.6rem;letter-spacing:10px;padding:12px;border:2px solid var(--border);border-radius:var(--radius-xs);font-family:monospace;outline:none;margin-bottom:10px}.pin-input:focus{border-color:var(--accent)}
+.pin-error{font-size:.76rem;color:var(--danger);min-height:1.2em;margin-bottom:8px}
+
+/* Confirm Dialog */
+.confirm-dlg{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;background:rgba(44,24,16,.5);opacity:0;pointer-events:none;transition:opacity .25s}.confirm-dlg.active{opacity:1;pointer-events:auto}
+.confirm-box{background:var(--card);border-radius:var(--radius);padding:28px;width:290px;text-align:center;box-shadow:var(--shadow-lg);transform:scale(.9);transition:transform .25s}.confirm-dlg.active .confirm-box{transform:scale(1)}
+.confirm-box h3{margin-bottom:8px;font-size:1.05rem}.confirm-box p{font-size:.86rem;color:var(--fg-light);margin-bottom:20px}
+.confirm-acts{display:flex;gap:10px}.confirm-acts .btn{flex:1}
+
+/* Toast */
+.toast-wrap{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:600;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:calc(100% - 40px);max-width:360px}
+.toast{background:var(--fg);color:var(--bg);padding:12px 18px;border-radius:var(--radius-sm);font-size:.84rem;font-weight:500;box-shadow:var(--shadow-lg);transform:translateY(-20px);opacity:0;animation:tIn .3s forwards,tOut .3s 2.5s forwards;pointer-events:auto}
+@keyframes tIn{to{transform:translateY(0);opacity:1}}@keyframes tOut{to{transform:translateY(-20px);opacity:0}}
+
+.empty-state{text-align:center;padding:48px 20px;color:var(--muted)}.empty-state i{font-size:2.2rem;margin-bottom:12px;opacity:.35;display:block}.empty-state p{font-size:.88rem}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
-<body class="bg-cream text-bark min-h-screen">
-<div id="app"></div>
-<div id="toast-container" class="fixed top-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none"></div>
-<div id="modal-container" class="fixed inset-0 z-[9998] hidden"></div>
-<div id="cart-drawer" class="fixed inset-0 z-[9997] hidden">
-  <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" data-action="close-cart"></div>
-  <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col cart-open" id="cart-panel">
-    <div class="p-6 border-b border-sand flex items-center justify-between">
-      <h3 class="font-display text-xl font-semibold">Your Cart</h3>
-      <button data-action="close-cart" class="w-8 h-8 rounded-full hover:bg-sand-light flex items-center justify-center transition-colors"><i class="fas fa-times text-muted"></i></button>
-    </div>
-    <div class="flex-1 overflow-y-auto p-6" id="cart-items"></div>
-    <div class="p-6 border-t border-sand" id="cart-footer"></div>
+<body>
+
+<!-- Toast -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- PIN Modal -->
+<div class="pin-modal" id="pinModal">
+  <div class="pin-box">
+    <h3>Admin Access</h3>
+    <p>Enter your 4-digit PIN</p>
+    <input type="password" class="pin-input" id="pinInput" maxlength="4" inputmode="numeric" autocomplete="off">
+    <div class="pin-error" id="pinError"></div>
+    <button class="btn btn-outline btn-sm" onclick="closePin()">Cancel</button>
   </div>
 </div>
 
+<!-- Confirm Dialog -->
+<div class="confirm-dlg" id="confirmDlg">
+  <div class="confirm-box">
+    <h3 id="confirmTitle">Confirm</h3>
+    <p id="confirmMsg">Are you sure?</p>
+    <div class="confirm-acts">
+      <button class="btn btn-outline btn-sm" onclick="closeConfirm()">Cancel</button>
+      <button class="btn btn-danger btn-sm" id="confirmOk">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STORE FRONT ===== -->
+<div id="storeFront">
+  <header class="store-header">
+    <a class="store-logo" href="#">5 <span>&</span> 2 Kitchen</a>
+    <div style="display:flex;gap:8px">
+      <button class="icon-btn" onclick="scrollToProducts()" aria-label="Search"><i class="fas fa-search"></i></button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-tag">Handmade with Love</div>
+    <h1>Good food,<br>made simple</h1>
+    <p>Freshly prepared batches, limited quantities. Order ahead and pick up at your convenience.</p>
+  </section>
+
+  <div class="categories" id="catBar"></div>
+
+  <section class="products-section" id="productsSection">
+    <div class="products-grid" id="productsGrid"></div>
+  </section>
+
+  <section class="about-section" id="aboutSection">
+    <h2>Our Story</h2>
+    <p id="aboutText">Small-batch, home-kitchen goodness. We believe in real ingredients, honest flavours, and food that brings people together.</p>
+  </section>
+
+  <footer class="store-footer">
+    <p id="footerStoreName">5 & 2 Kitchen</p>
+    <button class="admin-link" onclick="openPin()"><i class="fas fa-cog"></i> Manage Store</button>
+  </footer>
+
+  <!-- Cart FAB -->
+  <button class="cart-fab hidden" id="cartFab" onclick="openCart()" aria-label="Cart">
+    <i class="fas fa-shopping-bag"></i>
+    <span class="cart-badge" id="cartBadge">0</span>
+  </button>
+</div>
+
+<!-- Cart Sheet -->
+<div class="sheet-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="sheet" id="cartSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <h2>Your Cart</h2>
+    <button class="sheet-close" onclick="closeCart()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="sheet-body" id="cartBody"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-total"><span>Total</span><span id="cartTotal">$0.00</span></div>
+    <button class="btn btn-accent" onclick="openCheckout()">Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- Product Detail Sheet -->
+<div class="sheet-overlay" id="detailOverlay" onclick="closeDetail()"></div>
+<div class="sheet" id="detailSheet">
+  <div class="sheet-handle"></div>
+  <div id="detailContent"></div>
+</div>
+
+<!-- Checkout Overlay -->
+<div class="checkout-overlay" id="checkoutOverlay">
+  <div class="checkout-header">
+    <button class="checkout-back" onclick="closeCheckout()"><i class="fas fa-arrow-left"></i></button>
+    <h2 style="font-size:1.05rem">Checkout</h2>
+  </div>
+  <div class="checkout-body" id="checkoutBody"></div>
+</div>
+
+<!-- ===== ADMIN PANEL ===== -->
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-header">
+    <button class="icon-btn" onclick="closeAdmin()"><i class="fas fa-arrow-left"></i></button>
+    <h2>Store Manager</h2>
+  </div>
+  <div class="admin-tabs" id="adminTabs">
+    <button class="admin-tab active" data-tab="products">Products</button>
+    <button class="admin-tab" data-tab="orders">Orders</button>
+    <button class="admin-tab" data-tab="settings">Settings</button>
+  </div>
+  <div class="admin-content" id="adminContent"></div>
+  <button class="admin-add-btn" id="adminAddBtn" onclick="openProductForm()"><i class="fas fa-plus"></i></button>
+</div>
+
 <script>
-// ===================== DATA LAYER =====================
-const DB={
-  _g(k){try{return JSON.parse(localStorage.getItem('sc_'+k))||[]}catch{return[]}},
-  _s(k,d){localStorage.setItem('sc_'+k,JSON.stringify(d))},
-  _id(){return Date.now().toString(36)+Math.random().toString(36).substr(2,9)},
-  // Users
-  users(){return this._g('users')},saveUsers(u){this._s('users',u)},
-  userByEmail(e){return this.users().find(u=>u.email===e)},
-  userById(id){return this.users().find(u=>u.id===id)},
-  createUser(d){const u={id:this._id(),...d,createdAt:new Date().toISOString()};const a=this.users();a.push(u);this.saveUsers(a);return u},
-  // Stores
-  stores(){return this._g('stores')},saveStores(s){this._s('stores',s)},
-  storeByUser(uid){return this.stores().find(s=>s.userId===uid)},
-  storeById(id){return this.stores().find(s=>s.id===id)},
-  createStore(d){const s={id:this._id(),...d,createdAt:new Date().toISOString()};const a=this.stores();a.push(s);this.saveStores(a);return s},
-  updateStore(id,d){const a=this.stores();const i=a.findIndex(s=>s.id===id);if(i>-1){a[i]={...a[i],...d};this.saveStores(a)}return a[i]},
-  // Products
-  products(){return this._g('products')},saveProducts(p){this._s('products',p)},
-  productsByStore(sid){return this.products().filter(p=>p.storeId===sid)},
-  productById(id){return this.products().find(p=>p.id===id)},
-  createProduct(d){const p={id:this._id(),...d,createdAt:new Date().toISOString()};const a=this.products();a.push(p);this.saveProducts(a);return p},
-  updateProduct(id,d){const a=this.products();const i=a.findIndex(p=>p.id===id);if(i>-1){a[i]={...a[i],...d};this.saveProducts(a)}return a[i]},
-  deleteProduct(id){this.saveProducts(this.products().filter(p=>p.id!==id))},
-  // Orders
-  orders(){return this._g('orders')},saveOrders(o){this._s('orders',o)},
-  ordersByStore(sid){return this.orders().filter(o=>o.storeId===sid).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt))},
-  createOrder(d){const o={id:this._id(),status:'new',...d,createdAt:new Date().toISOString()};const a=this.orders();a.push(o);this.saveOrders(a);return o},
-  updateOrder(id,d){const a=this.orders();const i=a.findIndex(o=>o.id===id);if(i>-1){a[i]={...a[i],...d};this.saveOrders(a)}return a[i]}
+/* ========================================
+   DATA & STATE
+   ======================================== */
+const DEFAULT_PRODUCTS = [
+  { id:1, name:"Sourdough Loaf", desc:"48-hour fermented artisan sourdough. Crispy crust, soft tangy crumb. No commercial yeast.", price:12, category:"Breads", image:"https://picsum.photos/seed/sourdough42/600/600", available:true },
+  { id:2, name:"Butter Croissants (4pc)", desc:"Flaky, golden, layers of pure French butter. Best enjoyed warm from the oven.", price:10, category:"Pastries", image:"https://picsum.photos/seed/croissant88/600/600", available:true },
+  { id:3, name:"Chocolate Chip Cookies (6pc)", desc:"Crispy edges, gooey centre. Belgian dark chocolate chunks in every bite.", price:8, category:"Cookies", image:"https://picsum.photos/seed/choccookie7/600/600", available:true },
+  { id:4, name:"Cinnamon Rolls (4pc)", desc:"Soft pillowy dough swirled with cinnamon sugar, topped with cream cheese glaze.", price:14, category:"Pastries", image:"https://picsum.photos/seed/cinnamonroll3/600/600", available:true },
+  { id:5, name:"Banana Bread", desc:"Moist, deeply flavoured with ripe bananas and a hint of walnut. No preservatives.", price:9, category:"Breads", image:"https://picsum.photos/seed/bananabread5/600/600", available:true },
+  { id:6, name:"Granola Jar (300g)", desc:"Toasted oats, honey, almonds, coconut flakes, and dried cranberries. Cluster-style.", price:11, category:"Others", image:"https://picsum.photos/seed/granola22/600/600", available:true },
+  { id:7, name:"Herb Focaccia", desc:"Rosemary, sea salt, and olive oil on a pillowy Italian flatbread. Perfect for sharing.", price:10, category:"Breads", image:"https://picsum.photos/seed/focaccia9/600/600", available:true },
+  { id:8, name:"Brownies (6pc)", desc:"Fudgy, dense, deeply chocolatey. Made with 70% dark couverture chocolate.", price:10, category:"Cookies", image:"https://picsum.photos/seed/brownies44/600/600", available:true },
+];
+
+const DEFAULT_SETTINGS = {
+  storeName: "5 & 2 Kitchen",
+  about: "Small-batch, home-kitchen goodness. We believe in real ingredients, honest flavours, and food that brings people together.",
+  paynowType: "uen", // "uen" or "mobile"
+  paynowId: "T23LL0001J",
+  pin: "0000"
 };
 
-// ===================== SEED DATA =====================
-function seedData(){
-  if(localStorage.getItem('sc_seeded'))return;
-  const uid='demo_user',sid='demo_store';
-  DB.saveUsers([{id:uid,name:'Sarah Chen',email:'sarah@artisanpantry.com',password:'demo123',createdAt:new Date().toISOString()}]);
-  DB.saveStores([{id:sid,userId:uid,name:'The Artisan Pantry',tagline:'Handcrafted goods for the mindful kitchen',description:'We source the finest ingredients and craft each product with care. From small-batch preserves to artisan spice blends, everything is made with love and intention.',logo:'',accentColor:'#C4653A',currency:'USD',createdAt:new Date().toISOString()}]);
-  DB.saveProducts([
-    {id:'p1',storeId:sid,name:'Wild Berry Jam',price:14,description:'A medley of wild-foraged berries, slowly cooked with raw cane sugar. No pectin, no preservatives — just fruit and patience.',category:'Preserves',image:'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400&h=400&fit=crop',inStock:true,featured:true,createdAt:new Date().toISOString()},
-    {id:'p2',storeId:sid,name:'Herb Salt Blend',price:9.50,description:'Hand-mixed sea salt with rosemary, thyme, and a hint of lemon zest. Elevates everything from roasted vegetables to fresh bread.',category:'Spices',image:'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&h=400&fit=crop',inStock:true,featured:true,createdAt:new Date().toISOString()},
-    {id:'p3',storeId:sid,name:'Sourdough Starter Kit',price:22,description:'Everything you need to begin your sourdough journey: active starter, bread flour, a proofing basket, and our detailed guide.',category:'Kits',image:'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=400&fit=crop',inStock:true,featured:false,createdAt:new Date().toISOString()},
-    {id:'p4',storeId:sid,name:'Raw Wildflower Honey',price:18,description:'Unfiltered wildflower honey from local beekeepers. Each jar captures the unique flavor of the season\'s bloom.',category:'Pantry',image:'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400&h=400&fit=crop',inStock:true,featured:true,createdAt:new Date().toISOString()},
-    {id:'p5',storeId:sid,name:'Olive Oil — First Press',price:28,description:'Cold-pressed from heirloom olives harvested at peak ripeness. Fruity, peppery, and utterly transformative on any dish.',category:'Pantry',image:'https://images.unsplash.com/photo-1474979266404-7eaabdf50194?w=400&h=400&fit=crop',inStock:false,featured:false,createdAt:new Date().toISOString()},
-    {id:'p6',storeId:sid,name:'Dried Herb Collection',price:12,description:'A curated set of four dried herbs: oregano, basil, sage, and mint. Grown organically and air-dried for maximum flavor.',category:'Spices',image:'https://images.unsplash.com/photo-1464186219519-0fd9a2b40a15?w=400&h=400&fit=crop',inStock:true,featured:false,createdAt:new Date().toISOString()}
-  ]);
-  DB.saveOrders([
-    {id:'o1',storeId:sid,customerName:'James Wilson',customerEmail:'james@example.com',items:[{productId:'p1',name:'Wild Berry Jam',price:14,qty:2},{productId:'p4',name:'Raw Wildflower Honey',price:18,qty:1}],total:46,status:'shipped',createdAt:new Date(Date.now()-864e5*3).toISOString()},
-    {id:'o2',storeId:sid,customerName:'Maria Garcia',customerEmail:'maria@example.com',items:[{productId:'p2',name:'Herb Salt Blend',price:9.50,qty:3}],total:28.50,status:'new',createdAt:new Date(Date.now()-864e5).toISOString()},
-    {id:'o3',storeId:sid,customerName:'Alex Kim',customerEmail:'alex@example.com',items:[{productId:'p3',name:'Sourdough Starter Kit',price:22,qty:1},{productId:'p6',name:'Dried Herb Collection',price:12,qty:2}],total:46,status:'delivered',createdAt:new Date(Date.now()-864e5*7).toISOString()}
-  ]);
-  localStorage.setItem('sc_seeded','true');
-}
-
-// ===================== AUTH =====================
-const Auth={
-  _u:null,
-  init(){try{const s=sessionStorage.getItem('sc_session');if(s)this._u=JSON.parse(s)}catch{}},
-  login(e,p){const u=DB.userByEmail(e);if(!u)return{error:'No account found with that email'};if(u.password!==p)return{error:'Incorrect password'};this._u=u;sessionStorage.setItem('sc_session',JSON.stringify(u));return{user:u}},
-  register(n,e,p){if(DB.userByEmail(e))return{error:'An account with that email already exists'};const u=DB.createUser({name:n,email:e,password:p});DB.createStore({userId:u.id,name:n+"'s Store",tagline:'Your store tagline goes here',description:'',logo:'',accentColor:'#C4653A',currency:'USD'});this._u=u;sessionStorage.setItem('sc_session',JSON.stringify(u));return{user:u}},
-  logout(){this._u=null;sessionStorage.removeItem('sc_session')},
-  user(){return this._u},
-  ok(){return!!this._u}
+const S = {
+  products: [], cart: [], orders: [], settings: {},
+  activeCat: "All", adminTab: "products", editingProduct: null,
+  checkoutStep: "form", currentOrderId: null, adminSearch: ""
 };
 
-// ===================== CART =====================
-const Cart={
-  _i:[],
-  init(){try{const s=sessionStorage.getItem('sc_cart');if(s)this._i=JSON.parse(s)}catch{}},
-  _s(){sessionStorage.setItem('sc_cart',JSON.stringify(this._i))},
-  add(p,q=1){const e=this._i.find(i=>i.id===p.id);if(e)e.qty+=q;else this._i.push({...p,qty:q});this._s()},
-  remove(pid){this._i=this._i.filter(i=>i.id!==pid);this._s()},
-  updateQty(pid,q){const i=this._i.find(x=>x.id===pid);if(i){i.qty=Math.max(1,q);this._s()}},
-  items(){return this._i},total(){return this._i.reduce((s,i)=>s+i.price*i.qty,0)},count(){return this._i.reduce((s,i)=>s+i.qty,0)},
-  clear(){this._i=[];this._s()}
-};
-
-// ===================== TOAST =====================
-function toast(msg,type='success'){
-  const c=document.getElementById('toast-container');
-  const cls={success:'bg-green-900 text-green-100',error:'bg-red-900 text-red-100',info:'bg-bark text-cream'};
-  const ico={success:'fa-check-circle',error:'fa-exclamation-circle',info:'fa-info-circle'};
-  const el=document.createElement('div');
-  el.className=`${cls[type]} px-5 py-3 rounded-xl shadow-lg flex items-center gap-3 text-sm font-medium pointer-events-auto toast-enter`;
-  el.innerHTML=`<i class="fas ${ico[type]}"></i><span>${msg}</span>`;
-  c.appendChild(el);
-  setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(40px)';el.style.transition='all .3s';setTimeout(()=>el.remove(),300)},3200);
+/* ========================================
+   PERSISTENCE
+   ======================================== */
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem('k52_data'));
+    if (d) {
+      S.products = d.products || [...DEFAULT_PRODUCTS];
+      S.orders = d.orders || [];
+      S.settings = { ...DEFAULT_SETTINGS, ...d.settings };
+    } else { resetDefaults(); }
+  } catch(e) { resetDefaults(); }
+  try { S.cart = JSON.parse(sessionStorage.getItem('k52_cart') || '[]'); } catch(e) { S.cart = []; }
 }
 
-// ===================== MODAL =====================
-function showModal(html){
-  const c=document.getElementById('modal-container');
-  c.className='fixed inset-0 z-[9998] flex items-center justify-center p-4';
-  c.innerHTML=`<div class="absolute inset-0 bg-black/50 backdrop-blur-sm" data-action="close-modal"></div><div class="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto" id="modal-box" style="animation:fadeUp .25s ease both">${html}</div>`;
-}
-function closeModal(){const c=document.getElementById('modal-container');c.className='fixed inset-0 z-[9998] hidden';c.innerHTML=''}
-
-// ===================== HELPERS =====================
-function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
-function fmtPrice(p,c='USD'){return new Intl.NumberFormat('en-US',{style:'currency',currency:c}).format(p)}
-function fmtDate(d){return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
-function timeAgo(d){const s=Math.floor((Date.now()-new Date(d))/1e3);if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago'}
-function statusBadge(s){
-  const m={new:['bg-blue-50 text-blue-700','New'],processing:['bg-amber-50 text-amber-700','Processing'],shipped:['bg-purple-50 text-purple-700','Shipped'],delivered:['bg-green-50 text-green-700','Delivered'],cancelled:['bg-red-50 text-red-700','Cancelled']};
-  const[l,t]=m[s]||['bg-gray-50 text-gray-600',s];
-  return`<span class="px-2.5 py-1 rounded-full text-xs font-medium ${l}">${t}</span>`
-}
-function placeholderImg(w=400,h=400){return`https://picsum.photos/seed/${Math.random().toString(36).substr(2,6)}/${w}/${h}.jpg`}
-
-// ===================== ROUTER =====================
-const Router={
-  routes:{},
-  on(p,h){this.routes[p]=h},
-  go(p){window.location.hash=p},
-  resolve(){
-    const h=window.location.hash.slice(1)||'/';
-    if(this.routes[h])return this.routes[h]();
-    for(const[p,fn]of Object.entries(this.routes)){
-      const rx=new RegExp('^'+p.replace(/:\w+/g,'([^/]+)')+'$');
-      const m=h.match(rx);
-      if(m)return fn(...m.slice(1));
-    }
-    this.routes['/']?.();
-  },
-  init(){window.addEventListener('hashchange',()=>this.resolve());this.resolve()}
-};
-
-// ===================== ADMIN LAYOUT =====================
-function adminLayout(content,active='dashboard'){
-  const u=Auth.user(),st=DB.storeByUser(u.id);
-  const nav=[
-    {id:'dashboard',icon:'fa-th-large',label:'Dashboard',path:'/dashboard'},
-    {id:'products',icon:'fa-box-open',label:'Products',path:'/products'},
-    {id:'orders',icon:'fa-receipt',label:'Orders',path:'/orders'},
-    {id:'settings',icon:'fa-sliders-h',label:'Store Settings',path:'/settings'}
-  ];
-  return`<div class="flex min-h-screen">
-    <div class="fixed inset-0 bg-black/40 z-40 hidden sidebar-overlay" id="sidebar-overlay" data-action="close-sidebar"></div>
-    <aside class="w-64 bg-bark text-cream flex flex-col fixed h-full z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300" id="sidebar">
-      <div class="p-6 border-b border-white/10"><a href="#/" class="font-display text-xl font-bold tracking-tight">Storecraft</a></div>
-      <nav class="flex-1 p-3 space-y-1">${nav.map(n=>`<a href="#${n.path}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-colors ${active===n.id?'bg-terra text-white font-medium':'text-cream/60 hover:text-cream hover:bg-white/8'}"><i class="fas ${n.icon} w-5 text-center text-xs"></i>${n.label}</a>`).join('')}</nav>
-      <div class="p-3 border-t border-white/10 space-y-1">
-        <a href="#/store/${st?.id||''}" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-cream/60 hover:text-cream hover:bg-white/8 transition-colors"><i class="fas fa-external-link-alt w-5 text-center text-xs"></i>View Store</a>
-        <button data-action="logout" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-cream/60 hover:text-red-300 hover:bg-white/8 transition-colors text-left"><i class="fas fa-sign-out-alt w-5 text-center text-xs"></i>Sign Out</button>
-      </div>
-      <div class="p-4 border-t border-white/10 flex items-center gap-3">
-        <div class="w-9 h-9 rounded-full bg-terra/80 flex items-center justify-center text-sm font-bold shrink-0">${u.name.charAt(0).toUpperCase()}</div>
-        <div class="min-w-0"><div class="text-sm font-medium truncate">${esc(u.name)}</div><div class="text-xs text-cream/40 truncate">${esc(u.email)}</div></div>
-      </div>
-    </aside>
-    <button data-action="toggle-sidebar" class="lg:hidden fixed top-4 left-4 z-[60] bg-bark text-cream w-10 h-10 rounded-xl flex items-center justify-center shadow-lg"><i class="fas fa-bars text-sm"></i></button>
-    <main class="flex-1 lg:ml-64 min-h-screen"><div class="p-5 pt-16 lg:p-10 lg:pt-10 max-w-6xl mx-auto page-enter" id="admin-content">${content}</div></main>
-  </div>`;
+function resetDefaults() {
+  S.products = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+  S.orders = [];
+  S.settings = { ...DEFAULT_SETTINGS };
 }
 
-// ===================== PAGES =====================
-
-// --- LANDING ---
-function pageLanding(){
-  const stores=DB.stores().filter(s=>s.name&&!s.name.includes("'s Store"));
-  document.getElementById('app').innerHTML=`<div class="page-enter">
-    <nav class="fixed top-0 w-full z-50 bg-cream/80 backdrop-blur-md border-b border-sand/50">
-      <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <a href="#/" class="font-display text-xl font-bold text-bark">Storecraft</a>
-        <div class="flex items-center gap-3">
-          <a href="#/login" class="text-sm text-muted hover:text-bark transition-colors px-4 py-2">Sign In</a>
-          <a href="#/register" class="text-sm bg-terra text-white px-5 py-2.5 rounded-lg hover:bg-terra-light transition-colors font-medium">Get Started</a>
-        </div>
-      </div>
-    </nav>
-    <section class="hero-pattern min-h-screen flex items-center pt-16">
-      <div class="max-w-6xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-16 items-center">
-        <div>
-          <div class="inline-flex items-center gap-2 bg-terra/10 text-terra text-xs font-semibold px-3 py-1.5 rounded-full mb-6"><i class="fas fa-sparkles"></i> Simple, beautiful stores</div>
-          <h1 class="font-display text-5xl lg:text-6xl font-bold leading-[1.1] mb-6 text-bark">Your store,<br><span class="text-terra">beautifully</span> simple</h1>
-          <p class="text-muted text-lg leading-relaxed mb-8 max-w-lg">Set up a gorgeous online store in minutes. No design skills needed, no complicated dashboards — just your products and your story.</p>
-          <div class="flex flex-wrap gap-4">
-            <a href="#/register" class="bg-terra text-white px-7 py-3.5 rounded-lg hover:bg-terra-light transition-colors font-medium text-sm">Create Your Store</a>
-            <a href="#/store/demo_store" class="border-2 border-bark/20 text-bark px-7 py-3.5 rounded-lg hover:border-bark/40 transition-colors font-medium text-sm">See an Example</a>
-          </div>
-        </div>
-        <div class="hidden lg:grid grid-cols-2 gap-4">
-          <div class="space-y-4"><div class="rounded-2xl overflow-hidden shadow-lg img-hover h-52"><img src="https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400&h=400&fit=crop" class="w-full h-full object-cover" alt=""></div><div class="rounded-2xl overflow-hidden shadow-lg img-hover h-36"><img src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400&h=300&fit=crop" class="w-full h-full object-cover" alt=""></div></div>
-          <div class="space-y-4 pt-8"><div class="rounded-2xl overflow-hidden shadow-lg img-hover h-36"><img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&h=300&fit=crop" class="w-full h-full object-cover" alt=""></div><div class="rounded-2xl overflow-hidden shadow-lg img-hover h-52"><img src="https://images.unsplash.com/photo-1474979266404-7eaabdf50194?w=400&h=400&fit=crop" class="w-full h-full object-cover" alt=""></div></div>
-        </div>
-      </div>
-    </section>
-    <section class="py-24 bg-white">
-      <div class="max-w-6xl mx-auto px-6">
-        <div class="text-center mb-16"><h2 class="font-display text-3xl font-bold mb-4">Everything you need, nothing you don't</h2><p class="text-muted max-w-xl mx-auto">We stripped away the complexity so you can focus on what matters — your products and your customers.</p></div>
-        <div class="grid md:grid-cols-3 gap-8">
-          ${[
-            {icon:'fa-palette',title:'Beautiful by default',desc:'Warm, artisanal templates that make your products look their best. No design skills required.'},
-            {icon:'fa-bolt',title:'Up and running fast',desc:'Add your first product in under two minutes. Your store is live the moment you hit publish.'},
-            {icon:'fa-heart',title:'Built for small makers',desc:'Designed with artisans, bakers, and small producers in mind. Not another bloated platform.'}
-          ].map(f=>`<div class="p-8 rounded-2xl border border-sand hover:border-terra/30 hover:shadow-md transition-all group"><div class="w-12 h-12 rounded-xl bg-terra/10 text-terra flex items-center justify-center mb-5 group-hover:bg-terra group-hover:text-white transition-colors"><i class="fas ${f.icon}"></i></div><h3 class="font-display text-lg font-semibold mb-2">${f.title}</h3><p class="text-muted text-sm leading-relaxed">${f.desc}</p></div>`).join('')}
-        </div>
-      </div>
-    </section>
-    <section class="py-24">
-      <div class="max-w-6xl mx-auto px-6">
-        <div class="text-center mb-16"><h2 class="font-display text-3xl font-bold mb-4">How it works</h2><p class="text-muted">Three steps to your own beautiful store.</p></div>
-        <div class="grid md:grid-cols-3 gap-8">
-          ${[{n:'01',t:'Create your account',d:'Sign up with just your name and email. Your store is created automatically.'},{n:'02',t:'Add your products',d:'Upload photos, set prices, write descriptions. Our forms guide you through every step.'},{n:'03',t:'Share your store',d:'Send your store link to anyone. They can browse and place orders instantly.'}].map(s=>`<div class="text-center"><div class="w-14 h-14 rounded-2xl bg-bark text-cream flex items-center justify-center font-display text-lg font-bold mx-auto mb-5">${s.n}</div><h3 class="font-display text-lg font-semibold mb-2">${s.t}</h3><p class="text-muted text-sm">${s.d}</p></div>`).join('')}
-        </div>
-      </div>
-    </section>
-    ${stores.length?`<section class="py-24 bg-white"><div class="max-w-6xl mx-auto px-6"><div class="text-center mb-12"><h2 class="font-display text-3xl font-bold mb-4">Stores on Storecraft</h2></div><div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">${stores.slice(0,6).map(s=>{const pc=DB.productsByStore(s.id).length;return`<a href="#/store/${s.id}" class="block p-6 rounded-2xl border border-sand hover:border-terra/30 hover:shadow-md transition-all group"><div class="flex items-center gap-4 mb-3"><div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-display font-bold text-lg" style="background:${s.accentColor||'#C4653A'}">${s.name.charAt(0)}</div><div><h3 class="font-display font-semibold group-hover:text-terra transition-colors">${esc(s.name)}</h3><p class="text-xs text-muted">${esc(s.tagline||'')}</p></div></div><p class="text-xs text-muted">${pc} product${pc!==1?'s':''}</p></a>`}).join('')}</div></div></section>`:''}
-    <footer class="py-12 border-t border-sand"><div class="max-w-6xl mx-auto px-6 text-center text-sm text-muted">Storecraft — Beautiful stores for makers and creators.</div></footer>
-  </div>`;
+function save() {
+  localStorage.setItem('k52_data', JSON.stringify({ products: S.products, orders: S.orders, settings: S.settings }));
+  sessionStorage.setItem('k52_cart', JSON.stringify(S.cart));
 }
 
-// --- LOGIN ---
-function pageLogin(){
-  document.getElementById('app').innerHTML=`<div class="min-h-screen flex items-center justify-center p-6 page-enter">
-    <div class="w-full max-w-sm">
-      <div class="text-center mb-8"><a href="#/" class="font-display text-2xl font-bold text-bark">Storecraft</a><p class="text-muted text-sm mt-2">Sign in to manage your store</p></div>
-      <form data-form="login" class="space-y-4">
-        <div><label class="block text-sm font-medium mb-1.5">Email</label><input type="email" name="email" required class="w-full px-4 py-3 rounded-lg border border-sand bg-white focus:outline-none focus:ring-2 focus:ring-terra/30 focus:border-terra text-sm" placeholder="you@example.com"></div>
-        <div><label class="block text-sm font-medium mb-1.5">Password</label><input type="password" name="password" required class="w-full px-4 py-3 rounded-lg border border-sand bg-white focus:outline-none focus:ring-2 focus:ring-terra/30 focus:border-terra text-sm" placeholder="Enter your password"></div>
-        <div id="login-error" class="text-red-600 text-sm hidden"></div>
-        <button type="submit" class="w-full bg-terra text-white py-3 rounded-lg hover:bg-terra-light transition-colors font-medium text-sm">Sign In</button>
-      </form>
-      <p class="text-center text-sm text-muted mt-6">Don't have an account? <a href="#/register" class="text-terra hover:underline font-medium">Create one</a></p>
-      <div class="mt-6 p-4 bg-sand-light rounded-xl text-xs text-muted"><strong class="text-bark">Demo:</strong> sarah@artisanpantry.com / demo123</div>
-    </div>
-  </div>`;
+/* ========================================
+   TOAST
+   ======================================== */
+function toast(msg) {
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  document.getElementById('toastWrap').appendChild(el);
+  setTimeout(() => el.remove(), 3000);
 }
 
-// --- REGISTER ---
-function pageRegister(){
-  document.getElementById('app').innerHTML=`<div class="min-h-screen flex items-center justify-center p-6 page-enter">
-    <div class="w-full max-w-sm">
-      <div class="text-center mb-8"><a href="#/" class="font-display text-2xl font-bold text-bark">Storecraft</a><p class="text-muted text-sm mt-2">Create your store in seconds</p></div>
-      <form data-form="register" class="space-y-4">
-        <div><label class="block text-sm font-medium mb-1.5">Your Name</label><input type="text" name="name" required class="w-full px-4 py-3 rounded-lg border border-sand bg-white focus:outline-none focus:ring-2 focus:ring-terra/30 focus:border-terra text-sm" placeholder="Jane Doe"></div>
-        <div><label class="block text-sm font-medium mb-1.5">Email</label><input type="email" name="email" required class="w-full px-4 py-3 rounded-lg border border-sand bg-white focus:outline-none focus:ring-2 focus:ring-terra/30 focus:border-terra text-sm" placeholder="you@example.com"></div>
-        <div><label class="block text-sm font-medium mb-1.5">Password</label><input type="password" name="password" required minlength="4" class="w-full px-4 py-3 rounded-lg border border-sand bg-white focus:outline-none focus:ring-2 focus:ring-terra/30 focus:border-terra text-sm" placeholder="At least 4 characters"></div>
-        <div id="reg-error" class="text-red-600 text-sm hidden"></div>
-        <button type="submit" class="w-full bg-terra text-white py-3 rounded-lg hover:bg-terra-light transition-colors font-medium text-sm">Create My Store</button>
-      </form>
-      <p class="text-center text-sm text-muted mt-6">Already have an account? <a href="#/login" class="text-terra hover:underline font-medium">Sign in</a></p>
-    </div>
-  </div>`;
+/* ========================================
+   CONFIRM DIALOG
+   ======================================== */
+let _confirmCb = null;
+function showConfirm(title, msg, cb) {
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmMsg').textContent = msg;
+  _confirmCb = cb;
+  document.getElementById('confirmDlg').classList.add('active');
 }
+function closeConfirm() { document.getElementById('confirmDlg').classList.remove('active'); _confirmCb = null; }
+document.getElementById('confirmOk').addEventListener('click', () => { if (_confirmCb) _confirmCb(); closeConfirm(); });
 
-// --- DASHBOARD ---
-function pageDashboard(){
-  const u=Auth.user(),st=DB.storeByUser(u.id),prods=DB.productsByStore(st.id),ords=DB.ordersByStore(st.id);
-  const revenue=ords.filter(o=>o.status!=='cancelled').reduce((s,o)=>s+o.total,0);
-  const newOrders=ords.filter(o=>o.status==='new').length;
-  document.getElementById('app').innerHTML=adminLayout(`
-    <div class="mb-8"><h1 class="font-display text-2xl font-bold">Welcome back, ${esc(u.name.split(' ')[0])}</h1><p class="text-muted text-sm mt-1">Here's what's happening with your store.</p></div>
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      ${[
-        {label:'Products',value:prods.length,icon:'fa-box-open',color:'bg-terra/10 text-terra'},
-        {label:'Orders',value:ords.length,icon:'fa-receipt',color:'bg-blue-50 text-blue-600'},
-        {label:'Revenue',value:fmtPrice(revenue,st.currency),icon:'fa-dollar-sign',color:'bg-green-50 text-green-600'},
-        {label:'New Orders',value:newOrders,icon:'fa-bell',color:'bg-amber-50 text-amber-600'}
-      ].map(s=>`<div class="stat-card bg-white rounded-xl p-5 border border-sand/50"><div class="flex items-center justify-between mb-3"><span class="text-xs text-muted font-medium uppercase tracking-wider">${s.label}</span><div class="w-8 h-8 rounded-lg ${s.color} flex items-center justify-center text-xs"><i class="fas ${s.icon}"></i></div></div><div class="text-2xl font-bold">${s.value}</div></div>`).join('')}
-    </div>
-    <div class="grid lg:grid-cols-3 gap-6">
-      <div class="lg:col-span-2 bg-white rounded-xl border border-sand/50">
-        <div class="p-5 border-b border-sand/50 flex items-center justify-between"><h2 class="font-display font-semibold">Recent Orders</h2><a href="#/orders" class="text-xs text-terra hover:underline font-medium">View All</a></div>
-        ${ords.length?`<div class="divide-y divide-sand/50">${ords.slice(0,5).map(o=>`<div class="p-5 flex items-center justify-between"><div class="min-w-0"><div class="font-medium text-sm">${esc(o.customerName)}</div><div class="text-xs text-muted mt-0.5">${o.items.map(i=>i.name).join(', ')}</div></div><div class="text-right shrink-0 ml-4"><div class="font-semibold text-sm">${fmtPrice(o.total,st.currency)}</div><div class="mt-1">${statusBadge(o.status)}</div></div></div>`).join('')}</div>`:`<div class="p-12 text-center text-muted text-sm"><i class="fas fa-inbox text-2xl mb-3 block text-sand"></i>No orders yet. Share your store link to get started!</div>`}
-      </div>
-      <div class="space-y-4">
-        <div class="bg-white rounded-xl border border-sand/50 p-5">
-          <h2 class="font-display font-semibold mb-4">Quick Actions</h2>
-          <div class="space-y-2">
-            <a href="#/products/new" class="flex items-center gap-3 p-3 rounded-lg hover:bg-sand-light transition-colors text-sm"><div class="w-8 h-8 rounded-lg bg-terra/10 text-terra flex items-center justify-center text-xs"><i class="fas fa-plus"></i></div>Add a Product</a>
-            <a href="#/store/${st.id}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-sand-light transition-colors text-sm"><div class="w-8 h-8 rounded-lg bg-sage/20 text-sage flex items-center justify-center text-xs"><i class="fas fa-eye"></i></div>Preview Store</a>
-            <a href="#/settings" class="flex items-center gap-3 p-3 rounded-lg hover:bg-sand-light transition-colors text-sm"><div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs"><i class="fas fa-paint-brush"></i></div>Customize Look</a>
-          </div>
-        </div>
-        ${!prods.length?`<div class="bg-terra/5 border border-terra/20 rounded-xl p-5"><h3 class="font-semibold text-sm mb-2">Get started</h3><p class="text-xs text-muted mb-3">Add your first product to bring your store to life.</p><a href="#/products/new" class="inline-block bg-terra text-white text-xs px-4 py-2 rounded-lg hover:bg-terra-light transition-colors">Add Product</a></div>`:''}
-      </div>
-    </div>
-  `,'dashboard');
+/* ========================================
+   PIN
+   ======================================== */
+function openPin() {
+  const m = document.getElementById('pinModal');
+  m.classList.add('active');
+  const inp = document.getElementById('pinInput');
+  inp.value = '';
+  document.getElementById('pinError').textContent = '';
+  setTimeout(() => inp.focus(), 300);
 }
-
-// --- STORE SETTINGS ---
-function pageSettings(){
-  const u=Auth.user(),st=DB.storeByUser(u.id);
-  document.getElementById('app').innerHTML=adminLayout(`
-    <div class="mb-8"><h1 class="font-display text-2xl font-bold">Store Settings</h1><p class="text-muted text-sm mt-1">Customize how your store looks and feels.</p></div>
-    <form data-form="save-settings" class="space-y-6 max-w-2xl">
-      <div class="bg-white rounded-xl border border-sand/50 p-6 space-y-5">
-        <h2 class="font-display font-semibold">Basic Info</h2>
-        <div><label class="block text-sm font-medium mb-1.5">Store Name</label><input type="text" name="name" value="${esc(st.name)}" required class="w-full px-4 py-3 rounded-lg border border-sand bg-white focus:outline-none focus:ring-2 focus:ring-terra/30 focus:border-terra text-sm"></div>
-        <div><label class="block text-sm font-medium mb-1.5">Tagline</label><input type="text" name="tagline" value="${esc(st.tagline)}" class="w-full px-4 py-3 rounded-lg border border-sand bg-white focus:outline-none focus:ring-2 focus:ring-terra/30 focus:border-terra text-sm" placeholder="A short phrase that describes your store"></div>
-        <div><label class="block text-sm font-medium mb-1.5">Description</label><textarea name="description" rows="3" class="w-full px-4 py-3 rounded-lg border border-sand bg-white focus:outline-none focus:ring-2 focus:ring-terra/30 focus:border-terra text-sm resize-none" placeholder="Tell customers about your story and what makes your products special.">${esc(st.description)}</textarea></div>
-      </div>
-      <div class="bg-white rounded-xl border border-sand/50 p-6 space-y-5">
-        <h2 class="font-display font-semibold">Appearance</h2>
-        <div class="grid md:grid-cols-2 gap-5">
-          <div><label class="block text-sm font-medium mb-1.5">Accent Color</label><div class="flex items-center gap-3"><input type="color" name="accentColor" value="${st.accentColor||'#C4653A'}"><span class="text-xs text-muted font-mono">${st.accentColor||'#C4653A'}</span></div></div>
-          <div><label class="block text-sm font-medium mb-1.5">Currency</label><select name="currency" class="w-full px-4 py-3 rounded-lg border border-sand bg-white focus:outline-none focus:ring-2 focus:ring-terra/30 focus:border-terra text-sm"><option value="USD" ${st.currency==='USD'?'selected':''}>USD ($)</option><option value="EUR" ${st.currency==='EUR'?'selected':''}>EUR (&euro;)</option><option value="GBP" ${st.currency==='GBP'?'selected':''}>GBP (&pound;)</option><option value="CAD" ${st.currency==='CAD'?'selected':''}>CAD (C$)</option><option value="AUD" ${st.currency==='AUD'?'selected':''}>AUD (A$)</option></select></div>
-        </div>
-        <div><label class="block text-sm font-medium mb-1.5">Logo Image URL</label><input type="url" name="logo" value="${esc(st.logo)}" class="w-full px-4 py-3 rounded-lg border border-sand bg-white focus:outline-none focus:ring-2 focus:ring-terra/30 focus:border-terra text-sm" placeholder="https://example.com/logo.png (leave empty for initial)"></div>
-        <div><label class="block text-sm font-medium mb-2">Live Preview</label>
-          <div class="rounded-xl border border-sand/50 p-6 text-center" style="background:${st.accentColor||'#C4653A'}10">
-            <div class="w-14 h-14 rounded-2xl mx-auto mb-3 flex items-center justify-center text-white font-display font-bold text-xl" style="background:${st.accentColor||'#C4653A'}" id="preview-icon">${st.name.charAt(0)}</div>
-            <div class="font-display font-semibold text-lg" id="preview-name">${esc(st.name)}</div>
-            <div class="text-sm text-muted mt-1" id="preview-tagline">${esc(st.tagline)}</div>
-          </div>
-        </div>
-      </div>
-      <button type="submit" class="bg-terra text-white px-8 py-3 rounded-lg hover:bg-terra-light transition-colors font-medium text-sm">Save Changes</button>
-    </form>
-  `,'settings');
-  // Live preview bindings
-  const form=document.querySelector('[data-form="save-settings"]');
-  form?.querySelector('[name="name"]')?.addEventListener('input',e=>{document.getElementById('preview-name').textContent=e.target.value;document.getElementById('preview-icon').textContent=e.target.value?.charAt(0)||''});
-  form?.querySelector('[name="tagline"]')?.addEventListener('input',e=>{document.getElementById('preview-tagline').textContent=e.target.value});
-  form?.querySelector('[name="accentColor"]')?.addEventListener('input',e=>{const c=e.target.value;form.querySelector('.font-mono').textContent=c;const box=form.querySelector('.rounded-xl.border.border-sand\\/50.p-6');if(box)box.style.background=c+'10';document.getElementById('preview-icon').style.background=c});
-}
-
-// --- PRODUCTS LIST ---
-function pageProducts(){
-  const u=Auth.user(),st=DB.storeByUser(u.id),prods=DB.productsByStore(st.id);
-  const cats=[...new Set(prods.map(p=>p.category).filter(Boolean))];
-  document.getElementById('app').innerHTML=adminLayout(`
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-      <div><h1 class="font-display text-2xl font-bold">Products</h1><p class="text-muted text-sm mt-1">${prods.length} product${prods.length!==1?'s':''} in your store</p></div>
-      <a href="#/products/new" class="inline-flex items-center gap-2 bg-terra text-white px-5 py-2.5 rounded-lg hover:bg-terra-light transition-colors font-medium text-sm shrink-0"><i class="fas fa-plus text-xs"></i>Add Product</a>
-    </div>
-    ${!prods.length?`<div class="bg-white rounded-xl border border-sand/50 p-16 text-center">
-      <div class="w-16 h-16 rounded-2xl bg-sand-light flex items-center justify-center mx-auto mb-5"><i class="fas fa-box-open text-2xl text-muted"></i></div>
-      <h3 class="font-display text-lg font-semibold mb-2">No products yet</h3>
-      <p class="text-muted text-sm mb-6 max-w-sm mx-auto">Add your first product to start selling. It only takes a minute.</p>
-      <a href="#/products/new" class="inline-flex items-center gap-2 bg-terra text-white px-6 py-3 rounded-lg hover:bg-terra-light transition-colors font-medium text-sm"><i class="fas fa-plus text-xs"></i>Add Your First Product</a>
-    </div>`:`
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      ${prods.map(p=>`<div class="product-admin-card bg-white rounded-xl border border-sand/50 overflow-hidden">
-        <div class="aspect-square bg-sand-light relative img-hover">${p.image?`<img src="${esc(p.image)}" class="w-full h-full object-cover" alt="${esc(p.name)}">`:`<div class="w-full h-full flex items-center justify-center text-sand"><i class="fas fa-image text-3xl"></i></div>`}
-          <div class="absolute top-3 left-3 flex gap-2">${p.featured?`<span class="bg-bark text-cream text-[10px] font-semibold px-2 py-1 rounded-full uppercase tracking-wider">Featured</span>`:''}${!p.inStock?`<span class="bg-red-600 text-white text-[10px] font-semibold px-2 py-1 rounded-full uppercase tracking-wider">Out of Stock</span>`:''}</div>
-        </div>
-        <div class="p-4">
-          <div class="flex items-start justify-between gap-2 mb-1"><h3 class="font-semibold text-sm leading-tight">${esc(p.name)}</h3><span class="font-bold text-sm shrink-0">${fmtPrice(p.price,st.currency)}</span></div>
-          <p class="text-xs text-muted mb-3">${esc(p.category||'Uncategorized')}</p>
-          <div class="flex gap-2">
-            <a href="#/products/${p.id}/edit" class="flex-1 text-center text-xs font-medium py-2 rounded-lg border border-sand hover:bg-sand-light transition-colors">Edit</a>
-            <button data-action="delete-product" data-id="${p.id}" class="px-3 py-2 rounded-lg border border-sand hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-colors text-xs"><i class="fas fa-trash-alt"></i></button>
-          </div>
-        </div>
-      </div>`).join('')}
-    </div>`}
-  `,'products');
-}
-
-// --- PRODUCT FORM (NEW/EDIT) ---
-function pageProductForm(editId){
-  const u=Auth.user(),st=DB.storeByUser(u.id);
-  const p=editId?DB.productById(editId):null;
-  const isEdit=!!p;
-  const existingCats=[...new Set(DB.productsByStore(st.id).map(x=>x.category).filter(Boolean))];
-  document.getElementById('app').innerHTML=adminLayout(`
-    <div class="mb-8"><a href="#/products" class="text-sm text-muted hover:text-bark transition-colors"><i class="fas fa-arrow-left mr-1"></i>Back to Products</a><h1 class="font-display text-2xl font-bold mt-3">${isEdit?'Edit Product':'Add New Product'}</h1></div>
-    <form data-form="${isEdit?'edit-product':'new-product'}" data-id="${editId||''}" class="space-y-6 max-w-2xl">
-      <div class="bg-white rounded-xl border border-sand/50 p-6 space-y-5">
-        <h2 class="font-display font-semibold">Details</h2>
-        <div><label class="block text-sm font-medium mb-1.5">Product Name</label><input type="text" name="name" value="${esc(p?.name||'')}" required class="w-full px-4 py-3 rounded-lg border border-sand bg-white focus:outline-none focus:ring-2 focus:ring-terra/30 focus:border-terra text-sm" placeholder="e.g. Wild Berry Jam"></div>
-        <div><label class="block text-sm font-medium mb-1.5">Description</label><textarea name="description" rows="4" class="w-full px-4 py-3 rounded-lg border border-sand bg-white focus:outline-none focus:ring-2 focus:ring-terra/30 focus:border-terra text-sm resize-none" placeholder="Describe your product — ingredients, story, how to use it...">${esc(p?.description||'')}</textarea></div>
-        <div class="grid sm:grid-cols-2 gap-5">
-          <div><label class="block text-sm font-medium mb-1.5">Price</label><div class="relative"><span class="absolute left-3 top-1/2 -translate-y-1/2 text-muted text-sm">$</span><input type="number" name="price" value="${p?.price||''}" required min="0" step="0.01" class="w-full pl-7 pr-4 py-3 rounded-lg border border-sand bg-white focus:outline-none focus:ring-2 focus:ring-terra/30 focus:border-terra text-sm" placeholder="0.00"></div></div>
-          <div><label class="block text-sm font-medium mb-1.5">Category</label><input type="text" name="category" value="${esc(p?.category||'')}" list="cat-list" class="w-full px-4 py-3 rounded-lg border border-sand bg-white focus:outline-none focus:ring-2 focus:ring-terra/30 focus:border-terra text-sm" placeholder="e.g. Preserves"><datalist id="cat-list">${existingCats.map(c=>`<option value="${esc(c)}">`).join('')}</datalist></div>
-        </div>
-      </div>
-      <div class="bg-white rounded-xl border border-sand/50 p-6 space-y-5">
-        <h2 class="font-display font-semibold">Image</h2>
-        <div class="drop-zone rounded-xl p-8 text-center cursor-pointer" id="drop-zone" data-action="trigger-upload">
-          <div id="img-preview">${p?.image?`<img src="${esc(p.image)}" class="max-h-48 mx-auto rounded-lg object-contain">`:`<div class="text-muted"><i class="fas fa-cloud-upload-alt text-3xl mb-3 block text-sand"></i><p class="text-sm font-medium">Click or drag an image here</p><p class="text-xs mt-1">or paste a URL below</p></div>`}</div>
-          <input type="file" name="file" accept="image/*" class="hidden" id="file-input">
-        </div>
-        <div><label class="block text-sm font-medium mb-1.5">Or paste image URL</label><input type="url" name="image" value="${esc(p?.image||'')}" class="w-full px-4 py-3 rounded-lg border border-sand bg-white focus:outline-none focus:ring-2 focus:ring-terra/30 focus:border-terra text-sm" placeholder="https://example.com/product.jpg" id="img-url-input"></div>
-      </div>
-      <div class="bg-white rounded-xl border border-sand/50 p-6 space-y-5">
-        <h2 class="font-display font-semibold">Options</h2>
-        <div class="flex flex-wrap gap-6">
-          <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" name="inStock" ${p?.inStock!==false?'checked':''} class="w-4 h-4 rounded border-sand text-terra focus:ring-terra/30"><span class="text-sm">In Stock</span></label>
-          <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" name="featured" ${p?.featured?'checked':''} class="w-4 h-4 rounded border-sand text-terra focus:ring-terra/30"><span class="text-sm">Featured Product</span></label>
-        </div>
-      </div>
-      <div class="flex gap-3">
-        <button type="submit" class="bg-terra text-white px-8 py-3 rounded-lg hover:bg-terra-light transition-colors font-medium text-sm">${isEdit?'Save Changes':'Add Product'}</button>
-        <a href="#/products" class="px-6 py-3 rounded-lg border border-sand hover:bg-sand-light transition-colors text-sm font-medium">Cancel</a>
-      </div>
-    </form>
-  `,'products');
-  // File upload handling
-  let uploadedDataUrl='';
-  const dropZone=document.getElementById('drop-zone');
-  const fileInput=document.getElementById('file-input');
-  const imgUrlInput=document.getElementById('img-url-input');
-  function handleFile(file){
-    if(!file||!file.type.startsWith('image/'))return toast('Please select an image file','error');
-    if(file.size>2*1024*1024)return toast('Image must be under 2MB','error');
-    const r=new FileReader();
-    r.onload=e=>{uploadedDataUrl=e.target.result;document.getElementById('img-preview').innerHTML=`<img src="${uploadedDataUrl}" class="max-h-48 mx-auto rounded-lg object-contain">`;imgUrlInput.value=''};
-    r.readAsDataURL(file);
+function closePin() { document.getElementById('pinModal').classList.remove('active'); }
+document.getElementById('pinInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const v = e.target.value.trim();
+    if (v === S.settings.pin) { closePin(); openAdmin(); }
+    else { document.getElementById('pinError').textContent = 'Incorrect PIN. Try again.'; e.target.value = ''; }
   }
-  dropZone?.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('dragover')});
-  dropZone?.addEventListener('dragleave',()=>dropZone.classList.remove('dragover'));
-  dropZone?.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('dragover');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0])});
-  fileInput?.addEventListener('change',e=>{if(e.target.files[0])handleFile(e.target.files[0])});
-  imgUrlInput?.addEventListener('input',e=>{if(e.target.value){uploadedDataUrl='';document.getElementById('img-preview').innerHTML=e.target.value?`<img src="${esc(e.target.value)}" class="max-h-48 mx-auto rounded-lg object-contain" onerror="this.parentElement.innerHTML='<div class=\\'text-muted\\'><i class=\\'fas fa-exclamation-triangle text-xl mb-2 block text-red-400\\'></i><p class=\\'text-xs\\'>Could not load image</p></div>'">`:'<div class="text-muted"><i class="fas fa-cloud-upload-alt text-3xl mb-3 block text-sand"></i><p class="text-sm font-medium">Click or drag an image here</p></div>'}});
-  window._getUploadedImg=()=>uploadedDataUrl;
+  if (e.key === 'Escape') closePin();
+});
+
+/* ========================================
+   ADMIN PANEL
+   ======================================== */
+function openAdmin() {
+  document.getElementById('adminPanel').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  renderAdmin();
+}
+function closeAdmin() {
+  document.getElementById('adminPanel').classList.remove('active');
+  document.body.style.overflow = '';
+  // Refresh store
+  renderCategories();
+  renderProducts();
+  updateStoreTexts();
 }
 
-// --- ORDERS ---
-function pageOrders(){
-  const u=Auth.user(),st=DB.storeByUser(u.id),ords=DB.ordersByStore(st.id);
-  const statuses=['new','processing','shipped','delivered','cancelled'];
-  document.getElementById('app').innerHTML=adminLayout(`
-    <div class="mb-8"><h1 class="font-display text-2xl font-bold">Orders</h1><p class="text-muted text-sm mt-1">${ords.length} total order${ords.length!==1?'s':''}</p></div>
-    ${!ords.length?`<div class="bg-white rounded-xl border border-sand/50 p-16 text-center"><div class="w-16 h-16 rounded-2xl bg-sand-light flex items-center justify-center mx-auto mb-5"><i class="fas fa-receipt text-2xl text-muted"></i></div><h3 class="font-display text-lg font-semibold mb-2">No orders yet</h3><p class="text-muted text-sm">Orders will appear here when customers place them from your store.</p></div>`:`
-    <div class="space-y-4">${ords.map(o=>`<div class="bg-white rounded-xl border border-sand/50 overflow-hidden">
-      <div class="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div class="flex items-center gap-4">
-          <div class="w-10 h-10 rounded-lg bg-sand-light flex items-center justify-center text-xs font-bold text-muted shrink-0">#${o.id.slice(-5).toUpperCase()}</div>
-          <div><div class="font-medium text-sm">${esc(o.customerName)} <span class="text-muted font-normal">&middot; ${esc(o.customerEmail)}</span></div><div class="text-xs text-muted mt-0.5">${fmtDate(o.createdAt)} &middot; ${timeAgo(o.createdAt)}</div></div>
-        </div>
-        <div class="flex items-center gap-4">
-          <div class="text-right"><div class="font-bold text-sm">${fmtPrice(o.total,st.currency)}</div><div class="text-xs text-muted">${o.items.reduce((s,i)=>s+i.qty,0)} item${o.items.reduce((s,i)=>s+i.qty,0)!==1?'s':''}</div></div>
-          <select data-action="update-order-status" data-id="${o.id}" class="text-xs border border-sand rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-terra/30 focus:border-terra">${statuses.map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('')}</select>
-        </div>
-      </div>
-      <div class="px-5 pb-4"><div class="flex flex-wrap gap-2">${o.items.map(i=>`<span class="text-xs bg-sand-light px-3 py-1.5 rounded-full">${esc(i.name)} x${i.qty}</span>`).join('')}</div></div>
-    </div>`).join('')}</div>`}
-  `,'orders');
+document.getElementById('adminTabs').addEventListener('click', e => {
+  const tab = e.target.closest('.admin-tab');
+  if (!tab) return;
+  S.adminTab = tab.dataset.tab;
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.toggle('active', t === tab));
+  document.getElementById('adminAddBtn').style.display = S.adminTab === 'products' ? '' : 'none';
+  renderAdmin();
+});
+
+function renderAdmin() {
+  const c = document.getElementById('adminContent');
+  document.getElementById('adminAddBtn').style.display = S.adminTab === 'products' ? '' : 'none';
+  if (S.adminTab === 'products') renderAdminProducts(c);
+  else if (S.adminTab === 'orders') renderAdminOrders(c);
+  else renderAdminSettings(c);
 }
 
-// --- STOREFRONT ---
-function pageStorefront(storeId){
-  const st=DB.storeById(storeId);
-  if(!st){document.getElementById('app').innerHTML=`<div class="min-h-screen flex items-center justify-center p-6"><div class="text-center"><h1 class="font-display text-3xl font-bold mb-3">Store Not Found</h1><p class="text-muted mb-6">This store doesn't exist or has been removed.</p><a href="#/" class="bg-terra text-white px-6 py-3 rounded-lg hover:bg-terra-light transition-colors text-sm font-medium">Go Home</a></div></div>`;return}
-  const prods=DB.productsByStore(st.id);
-  const cats=[...new Set(prods.map(p=>p.category).filter(Boolean))];
-  const accent=st.accentColor||'#C4653A';
-  const cartCount=Cart.count();
-  document.getElementById('app').innerHTML=`<div class="page-enter min-h-screen" style="--accent:${accent}">
-    <header class="sticky top-0 z-40 bg-cream/90 backdrop-blur-md border-b border-sand/30">
-      <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          ${st.logo?`<img src="${esc(st.logo)}" class="h-8 w-8 rounded-lg object-cover" alt="">`:`<div class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-display font-bold text-sm" style="background:${accent}">${st.name.charAt(0)}</div>`}
-          <span class="font-display font-semibold">${esc(st.name)}</span>
-        </div>
-        <div class="flex items-center gap-4">
-          ${Auth.ok()&&DB.storeByUser(Auth.user().id)?.id===st.id?`<a href="#/dashboard" class="text-xs text-muted hover:text-bark transition-colors"><i class="fas fa-cog mr-1"></i>Dashboard</a>`:''}
-          <button data-action="open-cart" class="relative w-10 h-10 rounded-lg hover:bg-sand-light flex items-center justify-center transition-colors"><i class="fas fa-shopping-bag text-sm"></i>${cartCount?`<span class="absolute -top-1 -right-1 w-5 h-5 rounded-full text-white text-[10px] font-bold flex items-center justify-center" style="background:${accent}">${cartCount}</span>`:''}</button>
-        </div>
-      </div>
-    </header>
-    <section class="py-16 lg:py-24 text-center" style="background:linear-gradient(180deg,${accent}08 0%,transparent 100%)">
-      <div class="max-w-2xl mx-auto px-6">
-        ${st.logo?`<img src="${esc(st.logo)}" class="w-20 h-20 rounded-2xl mx-auto mb-6 object-cover shadow-lg" alt="">`:`<div class="w-20 h-20 rounded-2xl mx-auto mb-6 flex items-center justify-center text-white font-display font-bold text-3xl shadow-lg" style="background:${accent}">${st.name.charAt(0)}</div>`}
-        <h1 class="font-display text-4xl lg:text-5xl font-bold mb-4">${esc(st.name)}</h1>
-        <p class="text-muted text-lg">${esc(st.tagline)}</p>
-        ${st.description?`<p class="text-muted/80 text-sm mt-4 max-w-lg mx-auto leading-relaxed">${esc(st.description)}</p>`:''}
-      </div>
-    </section>
-    ${cats.length?`<div class="max-w-6xl mx-auto px-6 mb-8"><div class="flex flex-wrap gap-2 justify-center" id="cat-filters">
-      <button data-action="filter-cat" data-cat="" class="px-4 py-2 rounded-full text-xs font-medium transition-colors border" style="border-color:${accent}30;background:${accent};color:white">All</button>
-      ${cats.map(c=>`<button data-action="filter-cat" data-cat="${esc(c)}" class="px-4 py-2 rounded-full text-xs font-medium transition-colors border border-sand hover:border-current" style="color:${accent}">${esc(c)}</button>`).join('')}
-    </div></div>`:''}
-    <section class="max-w-6xl mx-auto px-6 pb-24">
-      ${!prods.length?`<div class="text-center py-20"><div class="w-16 h-16 rounded-2xl bg-sand-light flex items-center justify-center mx-auto mb-5"><i class="fas fa-box-open text-2xl text-muted"></i></div><h3 class="font-display text-lg font-semibold mb-2">Coming Soon</h3><p class="text-muted text-sm">This store is setting up their products. Check back soon!</p></div>`:`
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="products-grid">
-        ${prods.map(p=>`<div class="group product-card bg-white rounded-2xl border border-sand/50 overflow-hidden hover:shadow-lg transition-all duration-300" data-category="${esc(p.category||'')}">
-          <div class="aspect-square bg-sand-light relative img-hover cursor-pointer" data-action="view-product" data-id="${p.id}">
-            ${p.image?`<img src="${esc(p.image)}" class="w-full h-full object-cover" alt="${esc(p.name)}" loading="lazy">`:`<div class="w-full h-full flex items-center justify-center text-sand"><i class="fas fa-image text-4xl"></i></div>`}
-            ${!p.inStock?`<div class="absolute inset-0 bg-white/60 flex items-center justify-center"><span class="bg-bark text-cream text-xs font-semibold px-4 py-2 rounded-full">Out of Stock</span></div>`:''}
-          </div>
-          <div class="p-5">
-            <p class="text-[10px] uppercase tracking-widest font-semibold mb-1.5" style="color:${accent}">${esc(p.category||'')}</p>
-            <h3 class="font-semibold text-sm mb-3 leading-tight">${esc(p.name)}</h3>
-            <div class="flex items-center justify-between">
-              <span class="font-bold">${fmtPrice(p.price,st.currency)}</span>
-              ${p.inStock?`<button data-action="add-to-cart" data-id="${p.id}" class="w-9 h-9 rounded-lg flex items-center justify-center transition-colors text-white text-xs hover:opacity-90" style="background:${accent}"><i class="fas fa-plus"></i></button>`:`<span class="text-xs text-muted">Unavailable</span>`}
+/* --- Admin Products --- */
+function renderAdminProducts(c) {
+  const cats = ["All", ...new Set(S.products.map(p => p.category))];
+  const filtered = S.adminSearch
+    ? S.products.filter(p => p.name.toLowerCase().includes(S.adminSearch.toLowerCase()))
+    : S.products;
+
+  c.innerHTML = `
+    <div class="admin-stats">
+      <div class="stat-card"><div class="stat-value">${S.products.length}</div><div class="stat-label">Products</div></div>
+      <div class="stat-card"><div class="stat-value">${S.products.filter(p=>p.available).length}</div><div class="stat-label">Active</div></div>
+      <div class="stat-card"><div class="stat-value">${cats.length-1}</div><div class="stat-label">Categories</div></div>
+    </div>
+    <div class="search-bar">
+      <i class="fas fa-search"></i>
+      <input type="text" placeholder="Search products..." value="${S.adminSearch}" id="adminSearchInput">
+    </div>
+    <div id="adminProductList">
+      ${filtered.length === 0 ? '<div class="empty-state"><i class="fas fa-box-open"></i><p>No products found</p></div>' :
+        filtered.map(p => `
+          <div class="admin-product-item">
+            <img src="${p.image}" alt="${p.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect fill=%22%23F0EBE3%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%239C8E82%22 font-size=%2214%22>No img</text></svg>'">
+            <div class="admin-product-info">
+              <div class="admin-product-name">${p.name}</div>
+              <div class="admin-product-meta">${p.category} &middot; $${p.price.toFixed(2)}${!p.available ? ' &middot; <span style="color:var(--danger)">Unavailable</span>' : ''}</div>
+            </div>
+            <button class="toggle ${p.available?'on':''}" data-toggle="${p.id}" aria-label="Toggle availability"></button>
+            <div class="admin-product-actions">
+              <button class="icon-btn" data-edit="${p.id}" aria-label="Edit"><i class="fas fa-pen"></i></button>
+              <button class="icon-btn" data-del="${p.id}" style="color:var(--danger)" aria-label="Delete"><i class="fas fa-trash"></i></button>
             </div>
           </div>
-        </div>`).join('')}
-      </div>`}
-    </section>
-    <footer class="border-t border-sand/50 py-8"><div class="max-w-6xl mx-auto px-6 text-center text-xs text-muted">Powered by <a href="#/" class="hover:text-bark transition-colors font-medium">Storecraft</a></div></footer>
-  </div>`;
-  // Category filter
-  window._storeAccent=accent;
+        `).join('')}
+    </div>
+  `;
+
+  // Events
+  const searchInput = document.getElementById('adminSearchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', e => { S.adminSearch = e.target.value; renderAdminProducts(c); });
+  }
+
+  c.querySelectorAll('[data-toggle]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = +btn.dataset.toggle;
+      const p = S.products.find(x => x.id === id);
+      if (p) { p.available = !p.available; save(); renderAdminProducts(c); toast(p.available ? `${p.name} is now available` : `${p.name} marked unavailable`); }
+    });
+  });
+  c.querySelectorAll('[data-edit]').forEach(btn => {
+    btn.addEventListener('click', () => openProductForm(+btn.dataset.edit));
+  });
+  c.querySelectorAll('[data-del]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = +btn.dataset.del;
+      const p = S.products.find(x => x.id === id);
+      showConfirm('Delete Product', `Remove "${p ? p.name : ''}" from your store?`, () => {
+        S.products = S.products.filter(x => x.id !== id);
+        save(); renderAdminProducts(c); toast('Product deleted');
+      });
+    });
+  });
 }
 
-// ===================== CART DRAWER =====================
-function renderCartDrawer(storeId){
-  const st=DB.storeById(storeId);
-  if(!st)return;
-  const accent=st.accentColor||'#C4653A';
-  const items=Cart.items();
-  const panel=document.getElementById('cart-panel');
-  panel.style.setProperty('--accent',accent);
-  document.getElementById('cart-items').innerHTML=items.length?`<div class="space-y-4">${items.map(i=>`
-    <div class="flex gap-4">
-      <div class="w-16 h-16 rounded-lg bg-sand-light shrink-0 overflow-hidden">${i.image?`<img src="${esc(i.image)}" class="w-full h-full object-cover" alt="">`:`<div class="w-full h-full flex items-center justify-center text-sand text-xs"><i class="fas fa-image"></i></div>`}</div>
-      <div class="flex-1 min-w-0">
-        <div class="font-medium text-sm truncate">${esc(i.name)}</div>
-        <div class="text-xs text-muted mt-0.5">${fmtPrice(i.price,st.currency)} each</div>
-        <div class="flex items-center gap-2 mt-2">
-          <button data-action="cart-qty" data-id="${i.id}" data-delta="-1" class="w-7 h-7 rounded-md border border-sand flex items-center justify-center text-xs hover:bg-sand-light transition-colors">-</button>
-          <span class="text-sm font-medium w-6 text-center">${i.qty}</span>
-          <button data-action="cart-qty" data-id="${i.id}" data-delta="1" class="w-7 h-7 rounded-md border border-sand flex items-center justify-center text-xs hover:bg-sand-light transition-colors">+</button>
+/* --- Product Form --- */
+function openProductForm(editId) {
+  const p = editId ? S.products.find(x => x.id === editId) : null;
+  const cats = [...new Set(S.products.map(x => x.category))];
+  S.editingProduct = p ? { ...p } : { id: Date.now(), name:'', desc:'', price:'', category: cats[0]||'Breads', image:'', available:true };
+
+  const ep = S.editingProduct;
+  const c = document.getElementById('adminContent');
+  c.innerHTML = `
+    <div class="admin-form">
+      <h3>${p ? 'Edit Product' : 'Add New Product'}</h3>
+      <div class="img-preview" id="imgPreview">
+        ${ep.image ? `<img src="${ep.image}" alt="Preview" onerror="this.parentElement.innerHTML='<i class=\\'ph fas fa-image\\'></i>'">` : '<i class="ph fas fa-image"></i>'}
+      </div>
+      <div class="form-group">
+        <label class="form-label">Image URL</label>
+        <input type="url" class="form-input" id="fImage" value="${ep.image}" placeholder="https://example.com/photo.jpg">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Product Name</label>
+        <input type="text" class="form-input" id="fName" value="${ep.name}" placeholder="e.g. Sourdough Loaf">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-input" id="fDesc" placeholder="Tell customers about this item...">${ep.desc}</textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Price ($)</label>
+          <input type="number" class="form-input" id="fPrice" value="${ep.price}" placeholder="0.00" step="0.01" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <input type="text" class="form-input" id="fCat" value="${ep.category}" placeholder="e.g. Breads" list="catList">
+          <datalist id="catList">${cats.map(c => `<option value="${c}">`).join('')}</datalist>
         </div>
       </div>
-      <button data-action="cart-remove" data-id="${i.id}" class="text-muted hover:text-red-500 transition-colors self-start mt-1"><i class="fas fa-times text-xs"></i></button>
-    </div>`).join('')}</div>`:`<div class="text-center py-12 text-muted"><i class="fas fa-shopping-bag text-3xl mb-3 block text-sand"></i><p class="text-sm">Your cart is empty</p></div>`;
-  document.getElementById('cart-footer').innerHTML=items.length?`
-    <div class="flex items-center justify-between mb-4"><span class="font-medium">Total</span><span class="text-xl font-bold">${fmtPrice(Cart.total(),st.currency)}</span></div>
-    <button data-action="open-checkout" data-store="${st.id}" class="w-full py-3.5 rounded-lg text-white font-medium text-sm hover:opacity-90 transition-opacity" style="background:${accent}">Checkout</button>
-  `:'';
-}
-
-function openCartDrawer(storeId){
-  renderCartDrawer(storeId);
-  document.getElementById('cart-drawer').classList.remove('hidden');
-  document.body.style.overflow='hidden';
-}
-function closeCartDrawer(){
-  document.getElementById('cart-drawer').classList.add('hidden');
-  document.body.style.overflow='';
-}
-
-// ===================== CHECKOUT MODAL =====================
-function showCheckout(storeId){
-  const st=DB.storeById(storeId);
-  if(!st)return;
-  const accent=st.accentColor||'#C4653A';
-  showModal(`
-    <div class="p-6">
-      <h2 class="font-display text-xl font-bold mb-1">Checkout</h2>
-      <p class="text-sm text-muted mb-6">Complete your order from ${esc(st.name)}</p>
-      <div class="space-y-3 mb-6">${Cart.items().map(i=>`<div class="flex justify-between text-sm"><span>${esc(i.name)} x${i.qty}</span><span class="font-medium">${fmtPrice(i.price*i.qty,st.currency)}</span></div>`).join('')}
-        <div class="border-t border-sand pt-3 flex justify-between font-bold"><span>Total</span><span>${fmtPrice(Cart.total(),st.currency)}</span></div>
+      <div class="form-group" style="display:flex;align-items:center;gap:12px">
+        <button class="toggle ${ep.available?'on':''}" id="fAvail"></button>
+        <span style="font-size:.86rem">Available for order</span>
       </div>
-      <form data-form="checkout" data-store="${st.id}" class="space-y-4">
-        <div><label class="block text-sm font-medium mb-1">Full Name</label><input type="text" name="name" required class="w-full px-4 py-3 rounded-lg border border-sand bg-white focus:outline-none focus:ring-2 focus:ring-terra/30 focus:border-terra text-sm" placeholder="Jane Doe"></div>
-        <div><label class="block text-sm font-medium mb-1">Email</label><input type="email" name="email" required class="w-full px-4 py-3 rounded-lg border border-sand bg-white focus:outline-none focus:ring-2 focus:ring-terra/30 focus:border-terra text-sm" placeholder="jane@example.com"></div>
-        <button type="submit" class="w-full py-3.5 rounded-lg text-white font-medium text-sm hover:opacity-90 transition-opacity" style="background:${accent}">Place Order</button>
-      </form>
-    </div>
-  `);
-}
-
-// ===================== PRODUCT DETAIL MODAL =====================
-function showProductDetail(productId,storeId){
-  const p=DB.productById(productId),st=DB.storeById(storeId);
-  if(!p||!st)return;
-  const accent=st.accentColor||'#C4653A';
-  showModal(`
-    <div class="grid md:grid-cols-2 gap-0">
-      <div class="aspect-square bg-sand-light md:aspect-auto">${p.image?`<img src="${esc(p.image)}" class="w-full h-full object-cover" alt="${esc(p.name)}">`:`<div class="w-full h-64 flex items-center justify-center text-sand"><i class="fas fa-image text-4xl"></i></div>`}</div>
-      <div class="p-6">
-        <p class="text-[10px] uppercase tracking-widest font-semibold mb-2" style="color:${accent}">${esc(p.category||'')}</p>
-        <h2 class="font-display text-2xl font-bold mb-3">${esc(p.name)}</h2>
-        <p class="text-2xl font-bold mb-4">${fmtPrice(p.price,st.currency)}</p>
-        <p class="text-sm text-muted leading-relaxed mb-6">${esc(p.description)}</p>
-        ${p.inStock?`<button data-action="add-to-cart" data-id="${p.id}" class="w-full py-3.5 rounded-lg text-white font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2" style="background:${accent}"><i class="fas fa-shopping-bag text-xs"></i>Add to Cart</button>`:`<div class="w-full py-3.5 rounded-lg bg-sand-light text-muted font-medium text-sm text-center">Out of Stock</div>`}
+      <div style="display:flex;gap:10px;margin-top:20px">
+        <button class="btn btn-outline" onclick="renderAdmin()" style="flex:1">Cancel</button>
+        <button class="btn btn-accent" id="fSave" style="flex:2">Save Product</button>
       </div>
     </div>
-  `);
+  `;
+
+  // Live image preview
+  document.getElementById('fImage').addEventListener('input', e => {
+    const url = e.target.value.trim();
+    const prev = document.getElementById('imgPreview');
+    if (url) prev.innerHTML = `<img src="${url}" alt="Preview" onerror="this.parentElement.innerHTML='<i class=\\'ph fas fa-image\\'></i>'">`;
+    else prev.innerHTML = '<i class="ph fas fa-image"></i>';
+  });
+
+  // Toggle
+  document.getElementById('fAvail').addEventListener('click', function() {
+    this.classList.toggle('on');
+  });
+
+  // Save
+  document.getElementById('fSave').addEventListener('click', () => {
+    const name = document.getElementById('fName').value.trim();
+    const desc = document.getElementById('fDesc').value.trim();
+    const price = parseFloat(document.getElementById('fPrice').value);
+    const category = document.getElementById('fCat').value.trim();
+    const image = document.getElementById('fImage').value.trim();
+    const available = document.getElementById('fAvail').classList.contains('on');
+
+    if (!name) { toast('Please enter a product name'); return; }
+    if (isNaN(price) || price < 0) { toast('Please enter a valid price'); return; }
+    if (!category) { toast('Please enter a category'); return; }
+
+    const data = { ...S.editingProduct, name, desc, price, category, image: image || `https://picsum.photos/seed/${Date.now()}/600/600`, available };
+
+    if (p) {
+      const idx = S.products.findIndex(x => x.id === p.id);
+      if (idx >= 0) S.products[idx] = data;
+    } else {
+      S.products.push(data);
+    }
+
+    save();
+    S.editingProduct = null;
+    toast(p ? 'Product updated' : 'Product added');
+    renderAdmin();
+  });
 }
 
-// ===================== DELETE CONFIRMATION =====================
-function confirmDelete(productId,productName){
-  showModal(`
-    <div class="p-6 text-center">
-      <div class="w-14 h-14 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-4"><i class="fas fa-exclamation-triangle text-red-500 text-xl"></i></div>
-      <h3 class="font-display text-lg font-bold mb-2">Delete Product</h3>
-      <p class="text-sm text-muted mb-6">Are you sure you want to delete <strong>${esc(productName)}</strong>? This action cannot be undone.</p>
-      <div class="flex gap-3 justify-center">
-        <button data-action="close-modal" class="px-6 py-2.5 rounded-lg border border-sand hover:bg-sand-light transition-colors text-sm font-medium">Cancel</button>
-        <button data-action="confirm-delete" data-id="${productId}" class="px-6 py-2.5 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors text-sm font-medium">Delete</button>
-      </div>
+/* --- Admin Orders --- */
+function renderAdminOrders(c) {
+  const pending = S.orders.filter(o => o.status === 'pending').length;
+  c.innerHTML = `
+    <div class="admin-stats">
+      <div class="stat-card"><div class="stat-value">${S.orders.length}</div><div class="stat-label">Total Orders</div></div>
+      <div class="stat-card"><div class="stat-value">${pending}</div><div class="stat-label">Pending</div></div>
+      <div class="stat-card"><div class="stat-value">$${S.orders.reduce((s,o)=>s+o.total,0).toFixed(0)}</div><div class="stat-label">Revenue</div></div>
     </div>
-  `);
-}
+    ${S.orders.length === 0 ? '<div class="empty-state"><i class="fas fa-receipt"></i><p>No orders yet</p></div>' :
+      [...S.orders].reverse().map(o => `
+        <div class="order-card">
+          <div class="order-card-header">
+            <span class="order-ref-label">${o.id}</span>
+            <span class="order-status st-${o.status}">${o.status}</span>
+          </div>
+          <div class="order-customer">${o.customerName} <span>&middot; ${o.customerPhone}</span></div>
+          <div class="order-items-list">${o.items.map(i => `${i.name} x${i.qty}`).join(', ')}</div>
+          <div class="order-total-val">$${o.total.toFixed(2)}</div>
+          ${o.notes ? `<div class="order-notes">"${o.notes}"</div>` : ''}
+          <div class="order-actions">
+            <select class="status-select" data-status="${o.id}">
+              ${['pending','paid','preparing','ready','collected'].map(s => `<option value="${s}" ${o.status===s?'selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('')}
+            </select>
+            <button class="btn btn-danger btn-sm" style="width:auto;padding:8px 14px" data-delorder="${o.id}"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>
+      `).join('')}
+  `;
 
-// ===================== EVENT HANDLING =====================
-document.addEventListener('click',e=>{
-  const btn=e.target.closest('[data-action]');
-  if(!btn)return;
-  const action=btn.dataset.action;
-  const id=btn.dataset.id;
-
-  if(action==='close-modal'){closeModal();return}
-  if(action==='close-cart'){closeCartDrawer();return}
-  if(action==='close-sidebar'){document.getElementById('sidebar')?.classList.add('-translate-x-full');document.getElementById('sidebar-overlay')?.classList.add('hidden');return}
-  if(action==='toggle-sidebar'){document.getElementById('sidebar')?.classList.toggle('-translate-x-full');document.getElementById('sidebar-overlay')?.classList.toggle('hidden');return}
-  if(action==='logout'){Auth.logout();Cart.clear();Router.go('/');return}
-
-  if(action==='trigger-upload'){document.getElementById('file-input')?.click();return}
-
-  if(action==='delete-product'){const p=DB.productById(id);if(p)confirmDelete(id,p.name);return}
-  if(action==='confirm-delete'){DB.deleteProduct(id);closeModal();toast('Product deleted');Router.resolve();return}
-
-  if(action==='update-order-status'){const sel=btn;DB.updateOrder(id,{status:sel.value});toast('Order status updated');return}
-
-  if(action==='open-cart'){const hash=window.location.hash.slice(1);const sid=hash.replace('/store/','');openCartDrawer(sid);return}
-  if(action==='close-cart'){closeCartDrawer();return}
-  if(action==='cart-remove'){Cart.remove(id);const hash=window.location.hash.slice(1);renderCartDrawer(hash.replace('/store/',''));Router.resolve();return}
-  if(action==='cart-qty'){Cart.updateQty(id,Cart.items().find(i=>i.id===id).qty+parseInt(btn.dataset.delta));const hash=window.location.hash.slice(1);renderCartDrawer(hash.replace('/store/',''));Router.resolve();return}
-  if(action==='open-checkout'){closeCartDrawer();showCheckout(btn.dataset.store);return}
-
-  if(action==='add-to-cart'){const p=DB.productById(id);if(p){Cart.add(p);toast('Added to cart');const hash=window.location.hash.slice(1);const sid=hash.replace('/store/','');renderCartDrawer(sid);Router.resolve()}return}
-
-  if(action==='view-product'){const hash=window.location.hash.slice(1);const sid=hash.replace('/store/','');showProductDetail(id,sid);return}
-
-  if(action==='filter-cat'){
-    const cat=btn.dataset.cat;
-    const cards=document.querySelectorAll('.product-card');
-    const accent=window._storeAccent||'#C4653A';
-    document.querySelectorAll('#cat-filters button').forEach(b=>{
-      if(b.dataset.cat===cat){b.style.background=accent;b.style.color='white';b.style.borderColor=accent+'30'}
-      else{b.style.background='transparent';b.style.color=accent;b.style.borderColor='#E8DFD4'}
+  c.querySelectorAll('[data-status]').forEach(sel => {
+    sel.addEventListener('change', e => {
+      const id = e.target.dataset.status;
+      const o = S.orders.find(x => x.id === id);
+      if (o) { o.status = e.target.value; save(); toast(`Order ${id} → ${e.target.value}`); }
     });
-    cards.forEach(c=>{
-      if(!cat||c.dataset.category===cat){c.style.display='';c.style.animation='fadeUp .3s ease both'}
-      else c.style.display='none'
+  });
+  c.querySelectorAll('[data-delorder]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      showConfirm('Delete Order', `Remove order ${btn.dataset.delorder}?`, () => {
+        S.orders = S.orders.filter(o => o.id !== btn.dataset.delorder);
+        save(); renderAdminOrders(c); toast('Order deleted');
+      });
     });
-    return
+  });
+}
+
+/* --- Admin Settings --- */
+function renderAdminSettings(c) {
+  const s = S.settings;
+  c.innerHTML = `
+    <div class="admin-form">
+      <h3>Store Information</h3>
+      <div class="form-group">
+        <label class="form-label">Store Name</label>
+        <input type="text" class="form-input" id="sName" value="${s.storeName}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">About / Story</label>
+        <textarea class="form-input" id="sAbout">${s.about}</textarea>
+      </div>
+
+      <h3 style="margin-top:28px">PayNow Configuration</h3>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px">Customers will see a PayNow QR code at checkout to scan with their banking app.</p>
+      <div class="form-group">
+        <label class="form-label">PayNow Type</label>
+        <div class="radio-group">
+          <div class="radio-opt ${s.paynowType==='uen'?'active':''}" data-pntype="uen">UEN</div>
+          <div class="radio-opt ${s.paynowType==='mobile'?'active':''}" data-pntype="mobile">Mobile Number</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">${s.paynowType==='uen'?'UEN Number':'Mobile Number (+65)'}</label>
+        <input type="text" class="form-input" id="sPaynowId" value="${s.paynowId}" placeholder="${s.paynowType==='uen'?'e.g. T23LL0001J':'e.g. 91234567'}">
+      </div>
+
+      <h3 style="margin-top:28px">Security</h3>
+      <div class="form-group">
+        <label class="form-label">Admin PIN (4 digits)</label>
+        <input type="password" class="form-input" id="sPin" value="${s.pin}" maxlength="4" inputmode="numeric" style="max-width:160px;letter-spacing:8px;text-align:center;font-family:monospace;font-size:1.3rem">
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:24px">
+        <button class="btn btn-outline" id="resetBtn" style="flex:1">Reset to Defaults</button>
+        <button class="btn btn-accent" id="saveSettingsBtn" style="flex:2">Save Settings</button>
+      </div>
+    </div>
+  `;
+
+  // PayNow type radio
+  c.querySelectorAll('[data-pntype]').forEach(opt => {
+    opt.addEventListener('click', () => {
+      c.querySelectorAll('[data-pntype]').forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+      const label = c.querySelector('#sPaynowId').parentElement.querySelector('.form-label');
+      label.textContent = opt.dataset.pntype === 'uen' ? 'UEN Number' : 'Mobile Number (+65)';
+      c.querySelector('#sPaynowId').placeholder = opt.dataset.pntype === 'uen' ? 'e.g. T23LL0001J' : 'e.g. 91234567';
+    });
+  });
+
+  // Save
+  document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+    const name = document.getElementById('sName').value.trim();
+    const about = document.getElementById('sAbout').value.trim();
+    const pnType = c.querySelector('[data-pntype].active').dataset.pntype;
+    const pnId = document.getElementById('sPaynowId').value.trim();
+    const pin = document.getElementById('sPin').value.trim();
+
+    if (!name) { toast('Store name is required'); return; }
+    if (!pnId) { toast('PayNow ID is required'); return; }
+    if (!pin || pin.length !== 4 || !/^\d{4}$/.test(pin)) { toast('PIN must be 4 digits'); return; }
+
+    S.settings = { ...S.settings, storeName: name, about, paynowType: pnType, paynowId: pnId, pin };
+    save();
+    toast('Settings saved');
+  });
+
+  // Reset
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    showConfirm('Reset Store', 'This will reset all products, orders, and settings to defaults. Continue?', () => {
+      resetDefaults();
+      save();
+      S.cart = [];
+      sessionStorage.removeItem('k52_cart');
+      renderAdmin();
+      toast('Store reset to defaults');
+    });
+  });
+}
+
+/* ========================================
+   STORE FRONT RENDERING
+   ======================================== */
+function getCategories() {
+  const cats = new Set(S.products.map(p => p.category));
+  return ["All", ...cats];
+}
+
+function renderCategories() {
+  const cats = getCategories();
+  document.getElementById('catBar').innerHTML = cats.map(c =>
+    `<button class="cat-pill ${S.activeCat===c?'active':''}" data-cat="${c}">${c}</button>`
+  ).join('');
+}
+
+function renderProducts() {
+  const grid = document.getElementById('productsGrid');
+  const list = S.activeCat === 'All' ? S.products : S.products.filter(p => p.category === S.activeCat);
+
+  if (list.length === 0) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-store-slash"></i><p>No products in this category</p></div>';
+    return;
   }
+
+  grid.innerHTML = list.map((p, i) => `
+    <div class="product-card ${p.available?'':'unavailable'}" data-pid="${p.id}" style="animation-delay:${i*0.06}s">
+      <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect fill=%22%23F0EBE3%22 width=%22200%22 height=%22200%22/><text x=%2250%25%22 y=%2255%25%22 text-anchor=%22middle%22 fill=%22%239C8E82%22 font-size=%2212%22>No img</text></svg>'">
+      ${!p.available ? '<div class="sold-out-badge">Sold Out</div>' : ''}
+      <div class="product-card-body">
+        <div class="product-card-name">${p.name}</div>
+        <div class="product-card-price">$${p.price.toFixed(2)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateStoreTexts() {
+  document.querySelector('.store-logo').innerHTML = S.settings.storeName.replace(/(&|and)/gi, '<span>&</span>');
+  document.getElementById('aboutText').textContent = S.settings.about;
+  document.getElementById('footerStoreName').textContent = S.settings.storeName;
+  document.title = S.settings.storeName;
+}
+
+function scrollToProducts() {
+  document.getElementById('productsSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+/* Category click */
+document.getElementById('catBar').addEventListener('click', e => {
+  const pill = e.target.closest('.cat-pill');
+  if (!pill) return;
+  S.activeCat = pill.dataset.cat;
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.toggle('active', p === pill));
+  renderProducts();
 });
 
-document.addEventListener('submit',e=>{
-  const form=e.target.closest('[data-form]');
-  if(!form)return;
-  e.preventDefault();
-  const fd=new FormData(form);
-  const data=Object.fromEntries(fd.entries());
-  const type=form.dataset.form;
-
-  if(type==='login'){
-    const errEl=document.getElementById('login-error');
-    const res=Auth.login(data.email,data.password);
-    if(res.error){errEl.textContent=res.error;errEl.classList.remove('hidden')}else{errEl?.classList.add('hidden');Router.go('/dashboard')}
-  }
-  else if(type==='register'){
-    const errEl=document.getElementById('reg-error');
-    const res=Auth.register(data.name,data.email,data.password);
-    if(res.error){errEl.textContent=res.error;errEl.classList.remove('hidden')}else{errEl?.classList.add('hidden');Router.go('/dashboard')}
-  }
-  else if(type==='save-settings'){
-    DB.updateStore(DB.storeByUser(Auth.user().id).id,{name:data.name,tagline:data.tagline,description:data.description,accentColor:data.accentColor,currency:data.currency,logo:data.image});
-    toast('Store settings saved');Router.resolve();
-  }
-  else if(type==='new-product'){
-    const st=DB.storeByUser(Auth.user().id);
-    const img=window._getUploadedImg?.()||data.image||'';
-    DB.createProduct({storeId:st.id,name:data.name,description:data.description,price:parseFloat(data.price)||0,category:data.category,image:img,inStock:!!data.inStock,featured:!!data.featured});
-    toast('Product added');Router.go('/products');
-  }
-  else if(type==='edit-product'){
-    const img=window._getUploadedImg?.()||data.image||'';
-    DB.updateProduct(form.dataset.id,{name:data.name,description:data.description,price:parseFloat(data.price)||0,category:data.category,image:img,inStock:!!data.inStock,featured:!!data.featured});
-    toast('Product updated');Router.go('/products');
-  }
-  else if(type==='checkout'){
-    const st=DB.storeById(form.dataset.store);
-    DB.createOrder({storeId:st.id,customerName:data.name,customerEmail:data.email,items:Cart.items().map(i=>({productId:i.id,name:i.name,price:i.price,qty:i.qty})),total:Cart.total()});
-    Cart.clear();closeModal();toast('Order placed successfully!');Router.resolve();
-  }
+/* Product card click → detail */
+document.getElementById('productsGrid').addEventListener('click', e => {
+  const card = e.target.closest('.product-card');
+  if (!card) return;
+  const id = +card.dataset.pid;
+  openDetail(id);
 });
 
-// ===================== ROUTES =====================
-Router.on('/',()=>{if(Auth.ok())Router.go('/dashboard');else pageLanding()});
-Router.on('/login',()=>{if(Auth.ok())Router.go('/dashboard');else pageLogin()});
-Router.on('/register',()=>{if(Auth.ok())Router.go('/dashboard');else pageRegister()});
-Router.on('/dashboard',()=>{if(!Auth.ok())return Router.go('/login');pageDashboard()});
-Router.on('/settings',()=>{if(!Auth.ok())return Router.go('/login');pageSettings()});
-Router.on('/products',()=>{if(!Auth.ok())return Router.go('/login');pageProducts()});
-Router.on('/products/new',()=>{if(!Auth.ok())return Router.go('/login');pageProductForm()});
-Router.on('/products/:id/edit',(id)=>{if(!Auth.ok())return Router.go('/login');pageProductForm(id)});
-Router.on('/orders',()=>{if(!Auth.ok())return Router.go('/login');pageOrders()});
-Router.on('/store/:id',(id)=>pageStorefront(id));
+/* ========================================
+   PRODUCT DETAIL
+   ======================================== */
+function openDetail(id) {
+  const p = S.products.find(x => x.id === id);
+  if (!p) return;
+  const inCart = S.cart.find(c => c.productId === id);
+  const qty = inCart ? inCart.qty : 1;
 
-// ===================== INIT =====================
-seedData();
-Auth.init();
-Cart.init();
-Router.init();
+  document.getElementById('detailContent').innerHTML = `
+    <img class="detail-img" src="${p.image}" alt="${p.name}" onerror="this.style.display='none'">
+    <div class="detail-info">
+      <div class="detail-cat">${p.category}</div>
+      <div class="detail-name">${p.name}</div>
+      <div class="detail-price">$${p.price.toFixed(2)}</div>
+      <div class="detail-desc">${p.desc || 'No description provided.'}</div>
+      ${p.available ? `
+        <div class="detail-add">
+          <div class="qty-ctrl">
+            <button class="qty-btn" id="dMinus"><i class="fas fa-minus" style="font-size:.7rem"></i></button>
+            <div class="qty-val" id="dQty">${qty}</div>
+            <button class="qty-btn" id="dPlus"><i class="fas fa-plus" style="font-size:.7rem"></i></button>
+          </div>
+          <button class="btn btn-accent" id="dAdd">Add to Cart &mdash; $${(p.price * qty).toFixed(2)}</button>
+        </div>
+      ` : '<div style="text-align:center;color:var(--muted);font-weight:600;padding:12px">Currently unavailable</div>'}
+    </div>
+  `;
+
+  if (p.available) {
+    let q = qty;
+    const updateBtn = () => {
+      document.getElementById('dQty').textContent = q;
+      document.getElementById('dAdd').innerHTML = `Add to Cart &mdash; $${(p.price * q).toFixed(2)}`;
+    };
+    document.getElementById('dMinus').addEventListener('click', () => { if (q > 1) { q--; updateBtn(); } });
+    document.getElementById('dPlus').addEventListener('click', () => { q++; updateBtn(); });
+    document.getElementById('dAdd').addEventListener('click', () => {
+      addToCart(p.id, q);
+      closeDetail();
+    });
+  }
+
+  document.getElementById('detailOverlay').classList.add('active');
+  document.getElementById('detailSheet').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDetail() {
+  document.getElementById('detailOverlay').classList.remove('active');
+  document.getElementById('detailSheet').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+/* ========================================
+   CART
+   ======================================== */
+function addToCart(productId, qty = 1) {
+  const existing = S.cart.find(c => c.productId === productId);
+  if (existing) existing.qty += qty;
+  else S.cart.push({ productId, qty });
+  save();
+  updateCartBadge();
+  toast('Added to cart');
+}
+
+function updateCartQty(productId, delta) {
+  const item = S.cart.find(c => c.productId === productId);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) S.cart = S.cart.filter(c => c.productId !== productId);
+  save();
+  renderCartBody();
+  updateCartBadge();
+}
+
+function updateCartBadge() {
+  const fab = document.getElementById('cartFab');
+  const badge = document.getElementById('cartBadge');
+  const count = S.cart.reduce((s, c) => s + c.qty, 0);
+  badge.textContent = count;
+  fab.classList.toggle('hidden', count === 0);
+  badge.classList.remove('bounce');
+  void badge.offsetWidth; // reflow
+  badge.classList.add('bounce');
+}
+
+function openCart() {
+  renderCartBody();
+  document.getElementById('cartOverlay').classList.add('active');
+  document.getElementById('cartSheet').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCart() {
+  document.getElementById('cartOverlay').classList.remove('active');
+  document.getElementById('cartSheet').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function renderCartBody() {
+  const body = document.getElementById('cartBody');
+  const footer = document.getElementById('cartFooter');
+
+  if (S.cart.length === 0) {
+    body.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-bag"></i><p>Your cart is empty</p></div>';
+    footer.style.display = 'none';
+    return;
+  }
+
+  let total = 0;
+  body.innerHTML = S.cart.map(item => {
+    const p = S.products.find(x => x.id === item.productId);
+    if (!p) return '';
+    const sub = p.price * item.qty;
+    total += sub;
+    return `
+      <div class="cart-item">
+        <img src="${p.image}" alt="${p.name}" onerror="this.style.display='none'">
+        <div class="cart-item-info">
+          <div class="cart-item-name">${p.name}</div>
+          <div class="cart-item-price">$${sub.toFixed(2)}</div>
+        </div>
+        <div class="qty-ctrl">
+          <button class="qty-btn" data-cminus="${p.id}"><i class="fas fa-minus" style="font-size:.65rem"></i></button>
+          <div class="qty-val">${item.qty}</div>
+          <button class="qty-btn" data-cplus="${p.id}"><i class="fas fa-plus" style="font-size:.65rem"></i></button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('cartTotal').textContent = `$${total.toFixed(2)}`;
+  footer.style.display = '';
+
+  body.querySelectorAll('[data-cminus]').forEach(btn => {
+    btn.addEventListener('click', () => updateCartQty(+btn.dataset.cminus, -1));
+  });
+  body.querySelectorAll('[data-cplus]').forEach(btn => {
+    btn.addEventListener('click', () => updateCartQty(+btn.dataset.cplus, 1));
+  });
+}
+
+/* ========================================
+   CHECKOUT
+   ======================================== */
+function openCheckout() {
+  if (S.cart.length === 0) return;
+  closeCart();
+  S.checkoutStep = 'form';
+  renderCheckout();
+  setTimeout(() => {
+    document.getElementById('checkoutOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }, 100);
+}
+
+function closeCheckout() {
+  document.getElementById('checkoutOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function renderCheckout() {
+  const body = document.getElementById('checkoutBody');
+  let total = 0;
+  const items = S.cart.map(item => {
+    const p = S.products.find(x => x.id === item.productId);
+    if (!p) return null;
+    const sub = p.price * item.qty;
+    total += sub;
+    return { ...p, qty: item.qty, sub };
+  }).filter(Boolean);
+
+  if (S.checkoutStep === 'form') {
+    body.innerHTML = `
+      <div class="checkout-section">
+        <h3>Order Summary</h3>
+        ${items.map(i => `
+          <div class="summary-row">
+            <span>${i.name} x${i.qty}</span>
+            <span>$${i.sub.toFixed(2)}</span>
+          </div>
+        `).join('')}
+        <div class="summary-row total">
+          <span>Total</span>
+          <span>$${total.toFixed(2)}</span>
+        </div>
+      </div>
+      <div class="checkout-section">
+        <h3>Your Details</h3>
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-input" id="cName" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-input" id="cPhone" placeholder="+65 9XXX XXXX">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes (optional)</label>
+          <textarea class="form-input" id="cNotes" placeholder="Any special requests, allergies, etc."></textarea>
+        </div>
+      </div>
+      <button class="btn btn-accent" id="cPayBtn">Pay with PayNow &mdash; $${total.toFixed(2)}</button>
+    `;
+    document.getElementById('cPayBtn').addEventListener('click', () => {
+      const name = document.getElementById('cName').value.trim();
+      const phone = document.getElementById('cPhone').value.trim();
+      const notes = document.getElementById('cNotes').value.trim();
+      if (!name) { toast('Please enter your name'); return; }
+      if (!phone) { toast('Please enter your phone number'); return; }
+
+      // Create order
+      const orderId = `K52-${Date.now().toString(36).toUpperCase()}`;
+      S.currentOrderId = orderId;
+      S.orders.push({
+        id: orderId,
+        items: items.map(i => ({ name: i.name, price: i.price, qty: i.qty })),
+        total,
+        customerName: name,
+        customerPhone: phone,
+        notes,
+        status: 'pending',
+        createdAt: new Date().toISOString()
+      });
+      save();
+      S.checkoutStep = 'paynow';
+      renderCheckout();
+    });
+
+  } else if (S.checkoutStep === 'paynow') {
+    const pnId = S.settings.paynowId;
+    const pnType = S.settings.paynowType;
+    const qrData = pnType === 'mobile' ? `+65${pnId.replace(/\s/g,'')}` : pnId;
+    let qrHtml = '';
+    try {
+      const qr = qrcode(0, 'M');
+      qr.addData(qrData);
+      qr.make();
+      qrHtml = `<img src="${qr.createDataURL(4,2)}" alt="PayNow QR">`;
+    } catch(e) {
+      qrHtml = '<p style="color:var(--muted);font-size:.85rem">Could not generate QR code</p>';
+    }
+
+    body.innerHTML = `
+      <div class="checkout-section">
+        <h3>Pay with PayNow</h3>
+        <div class="paynow-section">
+          <div class="paynow-qr">${qrHtml}</div>
+          <div class="paynow-id">${pnType === 'uen' ? 'UEN' : 'Mobile'}: <strong>${pnId}</strong></div>
+          <p class="paynow-note">Open your banking app, scan this QR code, and transfer the exact amount. You can also manually enter the ${pnType} above.</p>
+        </div>
+      </div>
+      <div class="checkout-section">
+        <h3>Order Total</h3>
+        <div class="summary-row total">
+          <span>Pay ${S.settings.storeName}</span>
+          <span>$${total.toFixed(2)}</span>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="cConfirmBtn" style="margin-bottom:12px">I've Completed the Payment</button>
+      <button class="btn btn-ghost" id="cCancelBtn">Cancel Order</button>
+    `;
+    document.getElementById('cConfirmBtn').addEventListener('click', () => {
+      S.checkoutStep = 'confirmation';
+      S.cart = [];
+      sessionStorage.removeItem('k52_cart');
+      updateCartBadge();
+      renderCheckout();
+    });
+    document.getElementById('cCancelBtn').addEventListener('click', () => {
+      S.orders = S.orders.filter(o => o.id !== S.currentOrderId);
+      save();
+      closeCheckout();
+    });
+
+  } else if (S.checkoutStep === 'confirmation') {
+    body.innerHTML = `
+      <div class="confirmation">
+        <div class="confirmation-icon"><i class="fas fa-check"></i></div>
+        <h2>Order Placed</h2>
+        <p>Thank you! We've received your order and will confirm once payment is received.</p>
+        <div class="order-ref">${S.currentOrderId}</div>
+        <p style="font-size:.78rem;color:var(--muted);margin-top:16px">Save this order ID for reference. We'll contact you at the phone number provided.</p>
+        <button class="btn btn-primary" style="margin-top:24px;max-width:260px;margin-left:auto;margin-right:auto" onclick="closeCheckout()">Back to Store</button>
+      </div>
+    `;
+  }
+}
+
+/* ========================================
+   INIT
+   ======================================== */
+function init() {
+  load();
+  renderCategories();
+  renderProducts();
+  updateStoreTexts();
+  updateCartBadge();
+}
+
+init();
 </script>
 </body>
 </html>
